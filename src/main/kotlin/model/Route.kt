@@ -2,10 +2,7 @@ package model
 
 import jakarta.validation.constraints.NotBlank
 import java.util.*
-import javax.persistence.Embedded
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import javax.persistence.*
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotNull
 
@@ -18,16 +15,19 @@ class Route(
 
     //Поле не может быть null
     @NotNull
-    @Embedded
+    @OneToOne
+    @JoinColumn(name = "coordinates_id", nullable = false)
     var coordinates: Coordinates,
 
     //Поле может быть null
-    @Embedded
+    @OneToOne
+    @JoinColumn(name = "from_id")
     var from: Location,
 
     //Поле не может быть null
     @NotNull
-    @Embedded
+    @OneToOne
+    @JoinColumn(name = "to_id", nullable = false)
     var to: Location,
 
     //Значение поля должно быть больше 1

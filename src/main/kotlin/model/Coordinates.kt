@@ -1,13 +1,13 @@
 package model
 
-import javax.persistence.Embeddable
+import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotNull
 
-@Embeddable
+@Entity
 class Coordinates(
     //Максимальное значение поля: 327, Поле не может быть null
     @NotNull
@@ -18,8 +18,7 @@ class Coordinates(
     @Min(value = -863, message = "Coordinates y should be greater than -863")
     var y: Float = 0f
 ) {
-    //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     @Id
     @GeneratedValue
-    var id: Int = 0
+    val id: Int = 1
 }

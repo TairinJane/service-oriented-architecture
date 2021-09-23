@@ -1,12 +1,12 @@
 package model
 
-import javax.persistence.Embeddable
+import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
-@Embeddable
+@Entity
 class Location(
     @NotNull
     var x: Float,
@@ -20,5 +20,5 @@ class Location(
 ) {
     @Id
     @GeneratedValue
-    var id: Int = 0
+    val id: Int = 1
 }
