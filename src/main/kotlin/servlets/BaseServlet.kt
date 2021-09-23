@@ -3,6 +3,7 @@ package servlets
 import com.google.gson.Gson
 import model.Route
 import persistence.RouteService
+import java.lang.IllegalArgumentException
 import javax.inject.Inject
 import javax.servlet.annotation.WebServlet
 import javax.servlet.http.HttpServlet
@@ -23,10 +24,40 @@ class BaseServlet : HttpServlet() {
         try {
             val id = req.pathInfo?.toLong()
             if (id != null) {
+                //get by id
                 val route = routeService.getRouteById(id)
                 resp.writeRouteToBody(route)
             } else {
-                resp.sendError(400, "Id parameter is not a valid number")
+                val respBody = resp.writer
+                //sorting stuff
+                // http://localhost:8080/api/routes?sort=a&sort=-cccc&name=b
+                val params = req.parameterMap
+                params.entries.forEach { (k, v) ->
+                    respBody.println("$k = ${v.contentToString()}")
+                }
+                respBody.println()
+
+                val sorting = mutableMapOf<String, SortType>()
+                params["sort"]?.forEach {
+                    if (it[0] == '-') {
+                        sorting[it.removePrefix("-")] = SortType.DESC
+                    } else sorting[it] = SortType.ASC
+                }
+                respBody.println("== Sorting")
+                respBody.println(sorting.toString())
+
+                val filter = mutableMapOf<String, String>()
+                params.forEach { (key, value) ->
+                    val isRouteField = ALLOWED_FIELDS[key]
+                    if (isRouteField == null) {
+                        resp.sendError(400, "Parameter '$key' is not allowed")
+                    } else {
+                        if (isRouteField)
+                            filter[key] = value.contentToString().trim('[', ']')
+                    }
+                }
+                respBody.println("== Filter")
+                respBody.println(filter.toString())
             }
         } catch (e: Exception) {
             resp.sendError(400, e.message)
