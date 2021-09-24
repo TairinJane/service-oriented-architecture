@@ -3,7 +3,6 @@ package servlets
 import com.google.gson.Gson
 import model.Route
 import persistence.RouteService
-import java.lang.IllegalArgumentException
 import javax.inject.Inject
 import javax.servlet.annotation.WebServlet
 import javax.servlet.http.HttpServlet
@@ -26,7 +25,7 @@ class BaseServlet : HttpServlet() {
             if (id != null) {
                 //get by id
                 val route = routeService.getRouteById(id)
-                resp.writeRouteToBody(route)
+                resp.writeJsonToBody(route)
             } else {
                 val respBody = resp.writer
                 //sorting stuff
@@ -51,6 +50,7 @@ class BaseServlet : HttpServlet() {
                     val isRouteField = ALLOWED_FIELDS[key]
                     if (isRouteField == null) {
                         resp.sendError(400, "Parameter '$key' is not allowed")
+                        return
                     } else {
                         if (isRouteField)
                             filter[key] = value.contentToString().trim('[', ']')
@@ -58,6 +58,9 @@ class BaseServlet : HttpServlet() {
                 }
                 respBody.println("== Filter")
                 respBody.println(filter.toString())
+
+                val filteredRoutes = routeService.filterRoutes(sorting, filter)
+                resp.writeJsonToBody(filteredRoutes)
             }
         } catch (e: Exception) {
             resp.sendError(400, e.message)
@@ -69,7 +72,7 @@ class BaseServlet : HttpServlet() {
         val body = req.readBody()
         val newRoute = gson.fromJson(body, Route::class.java)
         val route = routeService.newRoute(newRoute)
-        resp.writeRouteToBody(route)
+        resp.writeJsonToBody(route)
     }
 
     //update route
@@ -77,7 +80,7 @@ class BaseServlet : HttpServlet() {
         val body = req.readBody()
         val routeToUpdate = gson.fromJson(body, Route::class.java)
         val route = routeService.updateRoute(routeToUpdate)
-        resp.writeRouteToBody(route)
+        resp.writeJsonToBody(route)
     }
 
     //{id} - delete by id
@@ -97,16 +100,11 @@ class BaseServlet : HttpServlet() {
         }
     }
 
-    override fun service(req: HttpServletRequest?, resp: HttpServletResponse?) {
-        //TODO: cors
-        super.service(req, resp)
-    }
-
-    private fun HttpServletResponse.writeRouteToBody(route: Route) {
+    private fun <T> HttpServletResponse.writeJsonToBody(obj: T) {
         contentType = "application/json"
         characterEncoding = "UTF-8"
         writer?.run {
-            print(gson.toJson(route))
+            print(gson.toJson(obj))
             flush()
         }
     }
