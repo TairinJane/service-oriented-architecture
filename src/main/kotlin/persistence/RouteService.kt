@@ -30,7 +30,7 @@ class RouteService {
         return routeRepository.deleteRoute(routeId)
     }
 
-    fun filterRoutes(sorting: Map<String, SortType>, filter: Map<String, String>): List<Route> {
-        return routeRepository.filterRoutes(sorting, filter)
+    fun filterRoutes(sorting: Map<String, SortType>, filter: Map<String, String>, limit: Int = 10, offset: Int = 0): List<Route> {
+        return routeRepository.filterRoutes(sorting, filter, limit, offset)
     }
 }

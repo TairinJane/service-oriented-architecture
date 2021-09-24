@@ -4,9 +4,11 @@ import model.Route
 import org.hibernate.Transaction
 import servlets.SortType
 import util.HibernateSessionFactory
+import javax.persistence.TypedQuery
 import javax.persistence.criteria.CriteriaBuilder
 import javax.persistence.criteria.CriteriaQuery
 import javax.persistence.criteria.Root
+
 
 class RouteRepository {
 
@@ -94,7 +96,7 @@ class RouteRepository {
         }
     }
 
-    fun filterRoutes(sorting: Map<String, SortType>, filter: Map<String, String>): List<Route> {
+    fun filterRoutes(sorting: Map<String, SortType>, filter: Map<String, String>, limit: Int, offset: Int): List<Route> {
         val session =
             HibernateSessionFactory.sessionFactory?.openSession() ?: throw Exception("Couldn't create session")
         val criteriaBuilder = session.criteriaBuilder
@@ -106,6 +108,9 @@ class RouteRepository {
         criteriaQuery.applySorting(criteriaBuilder, root, sorting)
 
         val query = session.createQuery(criteriaQuery)
+        query.firstResult = offset
+        query.maxResults = limit
+
         val results = query.resultList
         println(results)
 

@@ -3,6 +3,7 @@ package servlets
 import com.google.gson.Gson
 import model.Route
 import persistence.RouteService
+import java.lang.IllegalArgumentException
 import javax.inject.Inject
 import javax.servlet.annotation.WebServlet
 import javax.servlet.http.HttpServlet
@@ -27,14 +28,29 @@ class BaseServlet : HttpServlet() {
                 val route = routeService.getRouteById(id)
                 resp.writeJsonToBody(route)
             } else {
-                val respBody = resp.writer
                 //sorting stuff
                 // http://localhost:8080/api/routes?sort=a&sort=-cccc&name=b
+
+                val respBody = resp.writer
                 val params = req.parameterMap
                 params.entries.forEach { (k, v) ->
                     respBody.println("$k = ${v.contentToString()}")
                 }
                 respBody.println()
+
+                val filter = mutableMapOf<String, String>()
+                params.forEach { (key, value) ->
+                    val isRouteField = ALLOWED_FIELDS[key]
+                    if (isRouteField == null) {
+                        resp.sendError(400, "Parameter '$key' is not allowed")
+                        return
+                    } else {
+                        if (isRouteField)
+                            filter[key] = value.paramArrayToString()
+                    }
+                }
+                respBody.println("== Filter")
+                respBody.println(filter.toString())
 
                 val sorting = mutableMapOf<String, SortType>()
                 params["sort"]?.forEach {
@@ -45,25 +61,16 @@ class BaseServlet : HttpServlet() {
                 respBody.println("== Sorting")
                 respBody.println(sorting.toString())
 
-                val filter = mutableMapOf<String, String>()
-                params.forEach { (key, value) ->
-                    val isRouteField = ALLOWED_FIELDS[key]
-                    if (isRouteField == null) {
-                        resp.sendError(400, "Parameter '$key' is not allowed")
-                        return
-                    } else {
-                        if (isRouteField)
-                            filter[key] = value.contentToString().trim('[', ']')
-                    }
-                }
-                respBody.println("== Filter")
-                respBody.println(filter.toString())
+                val limit = params["limit"]?.paramArrayToString()?.toInt() ?: 10
+                val offset = params["offset"]?.paramArrayToString()?.toInt() ?: 0
 
-                val filteredRoutes = routeService.filterRoutes(sorting, filter)
+                val filteredRoutes = routeService.filterRoutes(sorting, filter, limit, offset)
                 resp.writeJsonToBody(filteredRoutes)
             }
-        } catch (e: Exception) {
+        } catch (e: IllegalArgumentException) {
             resp.sendError(400, e.message)
+        } catch (e: Exception) {
+            resp.sendError(500, "Sorry, server error")
         }
     }
 
@@ -117,5 +124,9 @@ class BaseServlet : HttpServlet() {
             line = reader.readLine()
         }
         return body.toString()
+    }
+
+    private fun <T> Array<T>.paramArrayToString(): String {
+        return joinToString("")
     }
 }
