@@ -2,11 +2,9 @@ package servlets
 
 import model.Route
 import persistence.RouteService
-import util.SortType
-import util.getObjectFromBody
-import util.paramArrayToString
-import util.writeJsonToBody
+import util.*
 import java.time.LocalDateTime
+import java.time.format.DateTimeParseException
 import javax.inject.Inject
 import javax.servlet.annotation.WebServlet
 import javax.servlet.http.HttpServlet
@@ -17,8 +15,7 @@ import javax.servlet.http.HttpServletResponse
 @WebServlet(name = "Main", value = ["/api/routes/*"])
 class BaseServlet : HttpServlet() {
 
-    @Inject
-    private lateinit var routeService: RouteService
+    private val routeService = RouteService.instance
 
     //{id} or sorting
     override fun doGet(req: HttpServletRequest, resp: HttpServletResponse) {
@@ -42,7 +39,9 @@ class BaseServlet : HttpServlet() {
             }
             respBody.println()
 
-            val filter = parseFilterMap(params)
+            req.checkAllowedParameters()
+
+            val filter = parseFilterMap(params.filter { (key, _) -> key in Route.allFields })
             respBody.println("== Filter")
             respBody.println(filter.toString())
 
@@ -110,17 +109,29 @@ class BaseServlet : HttpServlet() {
         val filter = mutableMapOf<String, Any>()
         params.forEach { (key, value) ->
             val baseParam = key.split('.')[0]
-            if (baseParam !in Route.allFields) throw IllegalArgumentException("Parameter '$key' is not allowed")
+            if (baseParam !in Route.allFields) throw IllegalArgumentException("Filter parameter '$key' is not allowed")
             else {
                 val valueString = value.paramArrayToString()
-                filter[key] = when (key) {
-                    "name" -> valueString
-                    "distance" -> valueString.toFloat()
-                    "creationDate" -> LocalDateTime.parse(valueString)
-                    else -> valueString
+                try {
+                    filter[key] = when (key) {
+                        "name" -> valueString
+                        "distance" -> valueString.toFloat()
+                        "creationDate" -> LocalDateTime.parse(valueString)
+                        else -> valueString
+                    }
+                } catch (e: NumberFormatException) {
+                    throw IllegalArgumentException("Parameter '$key' = $valueString is not a valid number")
+                } catch (e: DateTimeParseException) {
+                    throw IllegalArgumentException("Parameter '$key' = $valueString is not a valid date")
                 }
             }
         }
         return filter
+    }
+
+    private fun HttpServletRequest.checkAllowedParameters() {
+        parameterNames.toList().forEach {
+            if (it !in ALLOWED_PARAMETERS) throw IllegalArgumentException("Parameter $it is not allowed")
+        }
     }
 }

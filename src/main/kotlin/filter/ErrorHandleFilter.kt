@@ -27,5 +27,6 @@ class ErrorHandleFilter : Filter {
     private fun handleError(response: ServletResponse, status: Int, e: Exception) {
         (response as HttpServletResponse).status = status
         response.writer.println(e.message)
+        e.printStackTrace()
     }
 }

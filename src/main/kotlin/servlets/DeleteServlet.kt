@@ -2,7 +2,6 @@ package servlets
 
 import persistence.RouteService
 import util.paramArrayToString
-import javax.inject.Inject
 import javax.servlet.annotation.WebServlet
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
@@ -10,8 +9,8 @@ import javax.servlet.http.HttpServletResponse
 
 @WebServlet(name = "DeleteWithDistance", value = ["/api/routes/delete-with-distance"])
 class DeleteServlet : HttpServlet() {
-    @Inject
-    private lateinit var routeService: RouteService
+
+    private val routeService = RouteService.instance
 
     override fun doDelete(req: HttpServletRequest, resp: HttpServletResponse) {
         val distanceString = req.parameterMap["distance"]?.paramArrayToString()

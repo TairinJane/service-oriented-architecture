@@ -1,6 +1,7 @@
 package util
 
 import com.google.gson.Gson
+import model.Route
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -36,3 +37,6 @@ fun <T> Array<T>.paramArrayToString(): String {
 enum class SortType {
     ASC, DESC
 }
+
+val ALLOWED_PARAMETERS = listOf("sort", "limit", "offset") + Route.allFields
+

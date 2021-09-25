@@ -2,12 +2,16 @@ package persistence
 
 import model.Route
 import util.SortType
-import javax.inject.Inject
+import javax.annotation.ManagedBean
 
+@ManagedBean
 class RouteService {
 
-    @Inject
-    private lateinit var routeRepository: RouteRepository
+    companion object {
+        var instance: RouteService = RouteService()
+    }
+
+    private val routeRepository = RouteRepository.instance
 
     fun getRouteById(routeId: Long): Route {
         return routeRepository.getRouteById(routeId)

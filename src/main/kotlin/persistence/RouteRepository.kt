@@ -9,10 +9,13 @@ import javax.persistence.criteria.CriteriaBuilder
 import javax.persistence.criteria.CriteriaQuery
 import javax.persistence.criteria.Root
 
-
 class RouteRepository {
 
     private val threshold = 0.01
+
+    companion object {
+        var instance: RouteRepository = RouteRepository()
+    }
 
     fun getRouteById(routeId: Long): Route {
         val session =

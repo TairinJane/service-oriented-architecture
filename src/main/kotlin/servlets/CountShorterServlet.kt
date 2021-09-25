@@ -2,7 +2,6 @@ package servlets
 
 import persistence.RouteService
 import util.paramArrayToString
-import javax.inject.Inject
 import javax.servlet.annotation.WebServlet
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
@@ -11,8 +10,7 @@ import javax.servlet.http.HttpServletResponse
 @WebServlet(name = "CountShorter", value = ["/api/routes/count-shorter-than"])
 class CountShorterServlet : HttpServlet() {
 
-    @Inject
-    private lateinit var routeService: RouteService
+    private val routeService = RouteService.instance
 
     //?distance=...
     override fun doGet(req: HttpServletRequest, resp: HttpServletResponse) {

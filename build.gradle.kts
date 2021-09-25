@@ -26,6 +26,7 @@ dependencies {
     implementation("org.hibernate.validator:hibernate-validator:7.0.0.Final")
     implementation("org.hibernate:hibernate-core:5.5.7.Final")
     implementation("com.google.code.gson:gson:2.8.8")
+    implementation("org.postgresql:postgresql:42.2.16")
 }
 
 tasks.test {
