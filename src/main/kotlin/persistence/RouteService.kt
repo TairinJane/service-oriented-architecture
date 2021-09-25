@@ -33,4 +33,16 @@ class RouteService {
     fun filterRoutes(sorting: Map<String, SortType>, filter: Map<String, String>, limit: Int = 10, offset: Int = 0): List<Route> {
         return routeRepository.filterRoutes(sorting, filter, limit, offset)
     }
+
+    fun deleteWithDistanceEquals(distance: Float): Boolean {
+        return routeRepository.deleteWithDistanceEquals(distance)
+    }
+
+    fun findMinDistanceRoute(): Route {
+        return routeRepository.findMinDistance()
+    }
+
+    fun countWithDistanceLessThan(distance: Float): Long {
+        return routeRepository.countWithDistanceLessThan(distance)
+    }
 }

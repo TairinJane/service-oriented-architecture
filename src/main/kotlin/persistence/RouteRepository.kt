@@ -1,10 +1,8 @@
 package persistence
 
 import model.Route
-import org.hibernate.Transaction
 import servlets.SortType
 import util.HibernateSessionFactory
-import javax.persistence.TypedQuery
 import javax.persistence.criteria.CriteriaBuilder
 import javax.persistence.criteria.CriteriaQuery
 import javax.persistence.criteria.Root
@@ -12,72 +10,63 @@ import javax.persistence.criteria.Root
 
 class RouteRepository {
 
-    fun getRouteById(routeId: Long): Route {
-        var transaction: Transaction? = null
-        try {
-            val session = HibernateSessionFactory.sessionFactory?.openSession()
-            transaction = session?.beginTransaction()
-            if (transaction == null || session == null)
-                throw Exception("Couldn't create transaction")
+    val FLOAT_EQUALS_TRESSHOLD = 0.01
 
+    fun getRouteById(routeId: Long): Route {
+        val session =
+            HibernateSessionFactory.sessionFactory?.openSession() ?: throw Exception("Couldn't create session")
+        val transaction = session.beginTransaction() ?: throw Exception("Couldn't create transaction")
+        try {
             val route = session.find(Route::class.java, routeId)
             if (route != null) {
                 transaction.commit()
                 return route
             } else {
-                throw Exception("No Route found with id = $routeId")
+                throw NoSuchElementException("No Route found with id = $routeId")
             }
         } catch (e: Exception) {
-            transaction?.rollback()
+            transaction.rollback()
             e.printStackTrace()
             throw e
         }
     }
 
     fun updateRoute(route: Route): Route {
-        var transaction: Transaction? = null
+        val session =
+            HibernateSessionFactory.sessionFactory?.openSession() ?: throw Exception("Couldn't create session")
+        val transaction = session.beginTransaction() ?: throw Exception("Couldn't create transaction")
         try {
-            val session = HibernateSessionFactory.sessionFactory?.openSession()
-            transaction = session?.beginTransaction()
-            if (transaction == null || session == null)
-                throw Exception("Couldn't create transaction")
-
             session.update(route)
             transaction.commit()
             return route
         } catch (e: Exception) {
-            transaction?.rollback()
+            transaction.rollback()
             e.printStackTrace()
             throw e
         }
     }
 
     fun addRoute(route: Route): Route {
-        var transaction: Transaction? = null
-        try {
-            val session = HibernateSessionFactory.sessionFactory?.openSession()
-            transaction = session?.beginTransaction()
-            if (transaction == null || session == null)
-                throw Exception("Couldn't create transaction")
+        val session =
+            HibernateSessionFactory.sessionFactory?.openSession() ?: throw Exception("Couldn't create session")
+        val transaction = session.beginTransaction() ?: throw Exception("Couldn't create transaction")
 
+        try {
             session.save(route)
             transaction.commit()
             return route
         } catch (e: Exception) {
-            transaction?.rollback()
+            transaction.rollback()
             e.printStackTrace()
             throw e
         }
     }
 
     fun deleteRoute(routeId: Long): Boolean {
-        var transaction: Transaction? = null
+        val session =
+            HibernateSessionFactory.sessionFactory?.openSession() ?: throw Exception("Couldn't create session")
+        val transaction = session.beginTransaction() ?: throw Exception("Couldn't create transaction")
         try {
-            val session = HibernateSessionFactory.sessionFactory?.openSession()
-            transaction = session?.beginTransaction()
-            if (transaction == null || session == null)
-                throw Exception("Couldn't create transaction")
-
             val route = session.find(Route::class.java, routeId)
 
             if (route != null) {
@@ -85,18 +74,22 @@ class RouteRepository {
                 session.flush()
                 transaction.commit()
             } else {
-                transaction.rollback()
-                throw Exception("No Route with id = $routeId")
+                throw NoSuchElementException("No Route found with id = $routeId")
             }
             return true
         } catch (e: Exception) {
-            transaction?.rollback()
+            transaction.rollback()
             e.printStackTrace()
-            return false
+            throw e
         }
     }
 
-    fun filterRoutes(sorting: Map<String, SortType>, filter: Map<String, String>, limit: Int, offset: Int): List<Route> {
+    fun filterRoutes(
+        sorting: Map<String, SortType>,
+        filter: Map<String, String>,
+        limit: Int,
+        offset: Int
+    ): List<Route> {
         val session =
             HibernateSessionFactory.sessionFactory?.openSession() ?: throw Exception("Couldn't create session")
         val criteriaBuilder = session.criteriaBuilder
@@ -115,6 +108,74 @@ class RouteRepository {
         println(results)
 
         return results
+    }
+
+    fun deleteWithDistanceEquals(distance: Float): Boolean {
+        val session =
+            HibernateSessionFactory.sessionFactory?.openSession() ?: throw Exception("Couldn't create session")
+        val criteriaBuilder = session.criteriaBuilder
+        val criteriaDelete = criteriaBuilder.createCriteriaDelete(Route::class.java)
+        val root = criteriaDelete.from(Route::class.java)
+
+        criteriaDelete.where(
+            criteriaBuilder.between(
+                root["distance"],
+                distance - FLOAT_EQUALS_TRESSHOLD,
+                distance + FLOAT_EQUALS_TRESSHOLD
+            )
+        )
+
+        val transaction = session.beginTransaction()
+        try {
+            session.createQuery(criteriaDelete).executeUpdate()
+            transaction.commit()
+        } catch (e: Exception) {
+            transaction.rollback()
+            throw e
+        }
+
+        return true
+    }
+
+    fun findMinDistance(): Route {
+        val session =
+            HibernateSessionFactory.sessionFactory?.openSession() ?: throw Exception("Couldn't create session")
+        val criteriaBuilder = session.criteriaBuilder
+        val criteriaQuery = criteriaBuilder.createQuery(Route::class.java)
+        val root = criteriaQuery.from(Route::class.java)
+
+        criteriaQuery.select(criteriaBuilder.min(root["distance"]))
+
+        val transaction = session.beginTransaction()
+        try {
+            val route = session.createQuery(criteriaQuery).singleResult
+            transaction.commit()
+            return route
+        } catch (e: Exception) {
+            transaction.rollback()
+            throw e
+        }
+    }
+
+    fun countWithDistanceLessThan(distance: Float): Long {
+        val session =
+            HibernateSessionFactory.sessionFactory?.openSession() ?: throw Exception("Couldn't create session")
+        val criteriaBuilder = session.criteriaBuilder
+        val criteriaQuery = criteriaBuilder.createQuery(Long::class.java)
+        val root = criteriaQuery.from(Route::class.java)
+
+        criteriaQuery.select(criteriaBuilder.count(root))
+        criteriaQuery.where(criteriaBuilder.lessThan(root["distance"], distance))
+
+        val transaction = session.beginTransaction()
+        try {
+            val count = session.createQuery(criteriaQuery).singleResult
+            transaction.commit()
+            return count
+        } catch (e: Exception) {
+            transaction.rollback()
+            throw e
+        }
     }
 
     private fun <T> CriteriaQuery<T>.applyFilter(
