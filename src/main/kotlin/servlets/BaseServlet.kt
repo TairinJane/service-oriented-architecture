@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import model.Route
 import persistence.RouteService
 import java.lang.IllegalArgumentException
+import java.util.NoSuchElementException
 import javax.inject.Inject
 import javax.servlet.annotation.WebServlet
 import javax.servlet.http.HttpServlet
@@ -21,56 +22,51 @@ class BaseServlet : HttpServlet() {
 
     //{id} or sorting
     override fun doGet(req: HttpServletRequest, resp: HttpServletResponse) {
-        try {
-            val id = req.pathInfo?.toLong()
-            if (id != null) {
-                //get by id
-                val route = routeService.getRouteById(id)
-                resp.writeJsonToBody(route)
-            } else {
-                //sorting stuff
-                // http://localhost:8080/api/routes?sort=a&sort=-cccc&name=b
+        val id = req.pathInfo?.toLong()
+        if (id != null) {
+            //get by id
+            val route = routeService.getRouteById(id)
+            resp.writeJsonToBody(route)
+        } else {
+            //sorting stuff
+            // http://localhost:8080/api/routes?sort=a&sort=-cccc&name=b
 
-                val respBody = resp.writer
-                val params = req.parameterMap
-                params.entries.forEach { (k, v) ->
-                    respBody.println("$k = ${v.contentToString()}")
-                }
-                respBody.println()
+            //TODO: вынести это в сервис, передавать туда параметр мапу
 
-                val filter = mutableMapOf<String, String>()
-                params.forEach { (key, value) ->
-                    val isRouteField = ALLOWED_FIELDS[key]
-                    if (isRouteField == null) {
-                        resp.sendError(400, "Parameter '$key' is not allowed")
-                        return
-                    } else {
-                        if (isRouteField)
-                            filter[key] = value.paramArrayToString()
-                    }
-                }
-                respBody.println("== Filter")
-                respBody.println(filter.toString())
-
-                val sorting = mutableMapOf<String, SortType>()
-                params["sort"]?.forEach {
-                    if (it[0] == '-') {
-                        sorting[it.removePrefix("-")] = SortType.DESC
-                    } else sorting[it] = SortType.ASC
-                }
-                respBody.println("== Sorting")
-                respBody.println(sorting.toString())
-
-                val limit = params["limit"]?.paramArrayToString()?.toInt() ?: 10
-                val offset = params["offset"]?.paramArrayToString()?.toInt() ?: 0
-
-                val filteredRoutes = routeService.filterRoutes(sorting, filter, limit, offset)
-                resp.writeJsonToBody(filteredRoutes)
+            val respBody = resp.writer
+            val params = req.parameterMap //эту
+            params.entries.forEach { (k, v) ->
+                respBody.println("$k = ${v.contentToString()}")
             }
-        } catch (e: IllegalArgumentException) {
-            resp.sendError(400, e.message)
-        } catch (e: Exception) {
-            resp.sendError(500, "Sorry, server error")
+            respBody.println()
+
+            val filter = mutableMapOf<String, String>()
+            params.forEach { (key, value) ->
+                val isRouteField = ALLOWED_FIELDS[key]
+                if (isRouteField == null) {
+                    throw IllegalArgumentException("Parameter '$key' is not allowed")
+                } else {
+                    if (isRouteField)
+                        filter[key] = value.paramArrayToString()
+                }
+            }
+            respBody.println("== Filter")
+            respBody.println(filter.toString())
+
+            val sorting = mutableMapOf<String, SortType>()
+            params["sort"]?.forEach {
+                if (it[0] == '-') {
+                    sorting[it.removePrefix("-")] = SortType.DESC
+                } else sorting[it] = SortType.ASC
+            }
+            respBody.println("== Sorting")
+            respBody.println(sorting.toString())
+
+            val limit = params["limit"]?.paramArrayToString()?.toInt() ?: 10
+            val offset = params["offset"]?.paramArrayToString()?.toInt() ?: 0
+
+            val filteredRoutes = routeService.filterRoutes(sorting, filter, limit, offset)
+            resp.writeJsonToBody(filteredRoutes)
         }
     }
 
@@ -80,6 +76,7 @@ class BaseServlet : HttpServlet() {
         val newRoute = gson.fromJson(body, Route::class.java)
         val route = routeService.newRoute(newRoute)
         resp.writeJsonToBody(route)
+        resp.status = 201
     }
 
     //update route
@@ -92,19 +89,16 @@ class BaseServlet : HttpServlet() {
 
     //{id} - delete by id
     override fun doDelete(req: HttpServletRequest, resp: HttpServletResponse) {
-        try {
-            val id = req.pathInfo?.toLong()
-            if (id != null) {
-                val result = routeService.deleteRoute(id)
-                if (!result) {
-                    resp.sendError(500, "Server Error: couldn't delete Route with id = $id")
-                }
-            } else {
-                resp.sendError(400, "Id parameter is not a valid number")
+        val id = req.pathInfo?.toLong()
+        if (id != null) {
+            val result = routeService.deleteRoute(id)
+            if (!result) {
+                throw NoSuchElementException("Couldn't delete Route with id = $id")
             }
-        } catch (e: Exception) {
-            resp.sendError(400, e.message)
+        } else {
+            throw IllegalArgumentException("Id parameter is absent")
         }
+        resp.status = 204
     }
 
     private fun <T> HttpServletResponse.writeJsonToBody(obj: T) {
@@ -112,7 +106,6 @@ class BaseServlet : HttpServlet() {
         characterEncoding = "UTF-8"
         writer?.run {
             print(gson.toJson(obj))
-            flush()
         }
     }
 
