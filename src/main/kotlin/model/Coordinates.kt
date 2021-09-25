@@ -6,6 +6,7 @@ import javax.persistence.Id
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotNull
+import kotlin.reflect.full.memberProperties
 
 @Entity
 class Coordinates(
@@ -21,4 +22,7 @@ class Coordinates(
     @Id
     @GeneratedValue
     val id: Int = 1
+
+    val allFields
+        get() = this::class.memberProperties.map { it.name }.filter { it != "id" }
 }

@@ -27,7 +27,7 @@ class RouteService {
 
     fun filterRoutes(
         sorting: Map<String, SortType>,
-        filter: Map<String, String>,
+        filter: Map<String, Any>,
         limit: Int = 10,
         offset: Int = 0
     ): List<Route> {

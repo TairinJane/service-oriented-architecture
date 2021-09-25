@@ -1,10 +1,12 @@
 package model
 
 import jakarta.validation.constraints.NotBlank
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotNull
+import kotlin.reflect.full.memberProperties
 
 @Entity
 class Route(
@@ -41,5 +43,16 @@ class Route(
 
     //Поле не может быть null, Значение этого поля должно генерироваться автоматически
     @NotNull
-    val creationDate: Date = Date()
+    val creationDate: LocalDateTime = LocalDateTime.now()
+
+    companion object {
+        private val objectFields
+            get() = listOf("coordinates", "from", "to")
+
+        val allFields
+            get() = Route::class.memberProperties.map { it.name }.filter { it != "id" }
+
+        val baseFields
+            get() = allFields.filter { it !in objectFields }
+    }
 }

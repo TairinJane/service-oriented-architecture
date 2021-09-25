@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
+import kotlin.reflect.full.memberProperties
 
 @Entity
 class Location(
@@ -21,4 +22,7 @@ class Location(
     @Id
     @GeneratedValue
     val id: Int = 1
+
+    val allFields
+        get() = this::class.memberProperties.map { it.name }.filter { it != "id" }
 }

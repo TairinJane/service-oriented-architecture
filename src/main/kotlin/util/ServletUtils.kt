@@ -32,3 +32,7 @@ fun <T> HttpServletRequest.getObjectFromBody(cl: Class<T>): T {
 fun <T> Array<T>.paramArrayToString(): String {
     return joinToString("")
 }
+
+enum class SortType {
+    ASC, DESC
+}

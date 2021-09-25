@@ -1,5 +1,7 @@
 package persistence
 
+import model.Coordinates
+import model.Location
 import model.Route
 import util.HibernateSessionFactory
 import util.SortType
@@ -86,7 +88,7 @@ class RouteRepository {
 
     fun filterRoutes(
         sorting: Map<String, SortType>,
-        filter: Map<String, String>,
+        filter: Map<String, Any>,
         limit: Int,
         offset: Int
     ): List<Route> {
@@ -181,12 +183,24 @@ class RouteRepository {
     private fun <T> CriteriaQuery<T>.applyFilter(
         cb: CriteriaBuilder,
         root: Root<T>,
-        filter: Map<String, String>
+        filter: Map<String, Any>
     ): CriteriaQuery<T> {
         if (filter.isEmpty()) return this
 
-        val filterList = filter.entries.map { (field, value) ->
-            cb.equal(root.get<String>(field), value)
+        val coordinatesJoin = root.join<Route, Coordinates>("coordinates")
+        val fromJoin = root.join<Route, Location>("from")
+        val toJoin = root.join<Route, Location>("to")
+
+        val filterList = filter.entries.map { (fieldName, value) ->
+            val (table, field) = if ('.' in fieldName) fieldName.split('.') else listOf("", fieldName)
+
+            val tableRoot = when (table) {
+                "coordinates" -> coordinatesJoin
+                "from" -> fromJoin
+                "to" -> toJoin
+                else -> root
+            }
+            cb.equal(tableRoot.get<String>(field), value)
         }
 
         where(*filterList.toTypedArray())

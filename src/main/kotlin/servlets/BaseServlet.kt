@@ -2,7 +2,11 @@ package servlets
 
 import model.Route
 import persistence.RouteService
-import util.*
+import util.SortType
+import util.getObjectFromBody
+import util.paramArrayToString
+import util.writeJsonToBody
+import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.servlet.annotation.WebServlet
 import javax.servlet.http.HttpServlet
@@ -20,6 +24,7 @@ class BaseServlet : HttpServlet() {
     override fun doGet(req: HttpServletRequest, resp: HttpServletResponse) {
         val id = req.pathInfo?.toLong()
 
+        @Suppress("UNCHECKED_CAST")
         if (id != null) {
             //get by id
             val route = routeService.getRouteById(id)
@@ -37,25 +42,11 @@ class BaseServlet : HttpServlet() {
             }
             respBody.println()
 
-            val filter = mutableMapOf<String, String>()
-            params.forEach { (key, value) ->
-                val isRouteField =
-                    ALLOWED_FIELDS[key] ?: throw IllegalArgumentException("Parameter '$key' is not allowed")
-                if (isRouteField)
-                    filter[key] = value.paramArrayToString()
-            }
+            val filter = parseFilterMap(params)
             respBody.println("== Filter")
             respBody.println(filter.toString())
 
-            val sorting = mutableMapOf<String, SortType>()
-            params["sort"]?.forEach {
-                val sotType = if (it[0] == '-') SortType.DESC else SortType.ASC
-                val field = it.removePrefix("-")
-
-                ALLOWED_FIELDS[field] ?: throw IllegalArgumentException("Sorting parameter '$field' is not allowed")
-
-                sorting[field] = sotType
-            }
+            val sorting = params["sort"]?.let { parseSortingMap(it) } ?: mapOf()
             respBody.println("== Sorting")
             respBody.println(sorting.toString())
 
@@ -71,6 +62,7 @@ class BaseServlet : HttpServlet() {
     //new route - get params from body
     override fun doPost(req: HttpServletRequest, resp: HttpServletResponse) {
         val newRoute = req.getObjectFromBody(Route::class.java)
+        //TODO: validate new route
         val route = routeService.newRoute(newRoute)
         resp.writeJsonToBody(route)
         resp.status = 201
@@ -79,6 +71,7 @@ class BaseServlet : HttpServlet() {
     //update route
     override fun doPut(req: HttpServletRequest, resp: HttpServletResponse) {
         val routeToUpdate = req.getObjectFromBody(Route::class.java)
+        //TODO: validate update route
         val route = routeService.updateRoute(routeToUpdate)
         resp.writeJsonToBody(route)
     }
@@ -96,5 +89,38 @@ class BaseServlet : HttpServlet() {
             throw IllegalArgumentException("Parameter 'id' is not a valid number")
         }
 
+    }
+
+    private fun parseSortingMap(sortingArray: Array<String>): Map<String, SortType> {
+        val sorting = mutableMapOf<String, SortType>()
+        sortingArray.forEach {
+            val sotType = if (it[0] == '-') SortType.DESC else SortType.ASC
+            val field = it.removePrefix("-")
+
+            if (field !in Route.allFields) throw IllegalArgumentException("Sorting parameter '$field' is not allowed")
+
+            sorting[field] = sotType
+        }
+        return sorting
+    }
+
+    private fun parseFilterMap(params: Map<String, Array<String>>): Map<String, Any> {
+        if (params.isEmpty()) return mapOf()
+
+        val filter = mutableMapOf<String, Any>()
+        params.forEach { (key, value) ->
+            val baseParam = key.split('.')[0]
+            if (baseParam !in Route.allFields) throw IllegalArgumentException("Parameter '$key' is not allowed")
+            else {
+                val valueString = value.paramArrayToString()
+                filter[key] = when (key) {
+                    "name" -> valueString
+                    "distance" -> valueString.toFloat()
+                    "creationDate" -> LocalDateTime.parse(valueString)
+                    else -> valueString
+                }
+            }
+        }
+        return filter
     }
 }
