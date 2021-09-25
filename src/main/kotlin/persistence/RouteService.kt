@@ -1,13 +1,8 @@
 package persistence
 
 import model.Route
-import servlets.SortType
-import util.HibernateSessionFactory
+import util.SortType
 import javax.inject.Inject
-import javax.persistence.criteria.CriteriaBuilder
-import javax.persistence.criteria.CriteriaQuery
-import javax.persistence.criteria.Root
-
 
 class RouteService {
 
@@ -30,7 +25,12 @@ class RouteService {
         return routeRepository.deleteRoute(routeId)
     }
 
-    fun filterRoutes(sorting: Map<String, SortType>, filter: Map<String, String>, limit: Int = 10, offset: Int = 0): List<Route> {
+    fun filterRoutes(
+        sorting: Map<String, SortType>,
+        filter: Map<String, String>,
+        limit: Int = 10,
+        offset: Int = 0
+    ): List<Route> {
         return routeRepository.filterRoutes(sorting, filter, limit, offset)
     }
 

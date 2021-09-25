@@ -1,4 +1,4 @@
-package servlets
+package util
 
 enum class SortType {
     ASC, DESC

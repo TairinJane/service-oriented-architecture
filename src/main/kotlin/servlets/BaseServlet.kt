@@ -1,10 +1,8 @@
 package servlets
 
-import com.google.gson.Gson
 import model.Route
 import persistence.RouteService
-import java.lang.IllegalArgumentException
-import java.util.NoSuchElementException
+import util.*
 import javax.inject.Inject
 import javax.servlet.annotation.WebServlet
 import javax.servlet.http.HttpServlet
@@ -12,17 +10,16 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 
-@WebServlet(name = "Home", value = ["/api/routes/*"])
+@WebServlet(name = "Main", value = ["/api/routes/*"])
 class BaseServlet : HttpServlet() {
 
     @Inject
     private lateinit var routeService: RouteService
 
-    private val gson = Gson()
-
     //{id} or sorting
     override fun doGet(req: HttpServletRequest, resp: HttpServletResponse) {
         val id = req.pathInfo?.toLong()
+
         if (id != null) {
             //get by id
             val route = routeService.getRouteById(id)
@@ -72,8 +69,7 @@ class BaseServlet : HttpServlet() {
 
     //new route - get params from body
     override fun doPost(req: HttpServletRequest, resp: HttpServletResponse) {
-        val body = req.readBody()
-        val newRoute = gson.fromJson(body, Route::class.java)
+        val newRoute = req.getObjectFromBody(Route::class.java)
         val route = routeService.newRoute(newRoute)
         resp.writeJsonToBody(route)
         resp.status = 201
@@ -81,8 +77,7 @@ class BaseServlet : HttpServlet() {
 
     //update route
     override fun doPut(req: HttpServletRequest, resp: HttpServletResponse) {
-        val body = req.readBody()
-        val routeToUpdate = gson.fromJson(body, Route::class.java)
+        val routeToUpdate = req.getObjectFromBody(Route::class.java)
         val route = routeService.updateRoute(routeToUpdate)
         resp.writeJsonToBody(route)
     }
@@ -96,30 +91,8 @@ class BaseServlet : HttpServlet() {
                 throw NoSuchElementException("Couldn't delete Route with id = $id")
             }
         } else {
-            throw IllegalArgumentException("Id parameter is absent")
+            throw IllegalArgumentException("Parameter 'id' is required")
         }
         resp.status = 204
-    }
-
-    private fun <T> HttpServletResponse.writeJsonToBody(obj: T) {
-        contentType = "application/json"
-        characterEncoding = "UTF-8"
-        writer?.run {
-            print(gson.toJson(obj))
-        }
-    }
-
-    private fun HttpServletRequest.readBody(): String {
-        val body = StringBuilder()
-        var line = reader.readLine()
-        while (line != null) {
-            body.append(line, "\n")
-            line = reader.readLine()
-        }
-        return body.toString()
-    }
-
-    private fun <T> Array<T>.paramArrayToString(): String {
-        return joinToString("")
     }
 }

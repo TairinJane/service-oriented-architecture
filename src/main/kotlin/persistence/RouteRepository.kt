@@ -1,8 +1,8 @@
 package persistence
 
 import model.Route
-import servlets.SortType
 import util.HibernateSessionFactory
+import util.SortType
 import javax.persistence.criteria.CriteriaBuilder
 import javax.persistence.criteria.CriteriaQuery
 import javax.persistence.criteria.Root
@@ -10,7 +10,7 @@ import javax.persistence.criteria.Root
 
 class RouteRepository {
 
-    val FLOAT_EQUALS_TRESSHOLD = 0.01
+    private val threshold = 0.01
 
     fun getRouteById(routeId: Long): Route {
         val session =
@@ -120,8 +120,8 @@ class RouteRepository {
         criteriaDelete.where(
             criteriaBuilder.between(
                 root["distance"],
-                distance - FLOAT_EQUALS_TRESSHOLD,
-                distance + FLOAT_EQUALS_TRESSHOLD
+                distance - threshold,
+                distance + threshold
             )
         )
 
