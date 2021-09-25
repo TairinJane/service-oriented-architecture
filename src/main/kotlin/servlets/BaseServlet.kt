@@ -39,26 +39,27 @@ class BaseServlet : HttpServlet() {
 
             val filter = mutableMapOf<String, String>()
             params.forEach { (key, value) ->
-                val isRouteField = ALLOWED_FIELDS[key]
-                if (isRouteField == null) {
-                    throw IllegalArgumentException("Parameter '$key' is not allowed")
-                } else {
-                    if (isRouteField)
-                        filter[key] = value.paramArrayToString()
-                }
+                val isRouteField =
+                    ALLOWED_FIELDS[key] ?: throw IllegalArgumentException("Parameter '$key' is not allowed")
+                if (isRouteField)
+                    filter[key] = value.paramArrayToString()
             }
             respBody.println("== Filter")
             respBody.println(filter.toString())
 
             val sorting = mutableMapOf<String, SortType>()
             params["sort"]?.forEach {
-                if (it[0] == '-') {
-                    sorting[it.removePrefix("-")] = SortType.DESC
-                } else sorting[it] = SortType.ASC
+                val sotType = if (it[0] == '-') SortType.DESC else SortType.ASC
+                val field = it.removePrefix("-")
+
+                ALLOWED_FIELDS[field] ?: throw IllegalArgumentException("Sorting parameter '$field' is not allowed")
+
+                sorting[field] = sotType
             }
             respBody.println("== Sorting")
             respBody.println(sorting.toString())
 
+            //TODO: check NumberFormatException message for var name
             val limit = params["limit"]?.paramArrayToString()?.toInt() ?: 10
             val offset = params["offset"]?.paramArrayToString()?.toInt() ?: 0
 
@@ -84,15 +85,16 @@ class BaseServlet : HttpServlet() {
 
     //{id} - delete by id
     override fun doDelete(req: HttpServletRequest, resp: HttpServletResponse) {
-        val id = req.pathInfo?.toLong()
-        if (id != null) {
+        try {
+            val id = req.pathInfo?.toLong() ?: throw IllegalArgumentException("Parameter 'id' is required")
             val result = routeService.deleteRoute(id)
             if (!result) {
                 throw NoSuchElementException("Couldn't delete Route with id = $id")
             }
-        } else {
-            throw IllegalArgumentException("Parameter 'id' is required")
+            resp.status = 204
+        } catch (e: NumberFormatException) {
+            throw IllegalArgumentException("Parameter 'id' is not a valid number")
         }
-        resp.status = 204
+
     }
 }
