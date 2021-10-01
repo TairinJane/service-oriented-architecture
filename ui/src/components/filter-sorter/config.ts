@@ -2,7 +2,8 @@ import { capitalize } from '../../util/util';
 
 export type SortType = 'asc' | 'desc' | '';
 
-type Sorting = Record<RouteFields, { sorting: SortType; value: string }>;
+export type FilterSorterField = { sorting: SortType; value: string };
+type Sorting = Record<RouteFields, FilterSorterField>;
 
 export enum RouteFields {
   ID = 'id',
@@ -19,7 +20,7 @@ export enum RouteFields {
   DISTANCE = 'distance',
 }
 
-export const initialSorting: Sorting = Object.values(RouteFields).reduce(
+export const initialFilterSorter: Sorting = Object.values(RouteFields).reduce(
   (sorting, field) => {
     sorting[field] = {
       sorting: '',
