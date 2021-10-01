@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @WebServlet(name = "MaxDistance", value = ["/api/routes/min-distance"])
-class MaxDistanceServlet : HttpServlet() {
+class MinDistanceServlet : HttpServlet() {
 
     private val routeService = RouteService.instance
 

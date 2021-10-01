@@ -21,7 +21,6 @@ class BaseServlet : HttpServlet() {
     override fun doGet(req: HttpServletRequest, resp: HttpServletResponse) {
         val id = req.pathInfo?.toLong()
 
-        @Suppress("UNCHECKED_CAST")
         if (id != null) {
             //get by id
             val route = routeService.getRouteById(id)
@@ -29,6 +28,7 @@ class BaseServlet : HttpServlet() {
         } else {
             //sorting stuff
             // http://localhost:8080/api/routes?sort=a&sort=-cccc&name=b
+            // http://localhost:8080/api/routes?sort=distance&distance=5
 
             //TODO: вынести это в сервис, передавать туда параметр мапу
 
