@@ -66,15 +66,6 @@ export const Sorter: React.FC = () => {
           type="number"
         />
         <FilterField
-          fieldName={RouteFields.CREATION_DATE}
-          setFieldValue={setFieldValue}
-          filterSorterField={filterSorter[RouteFields.CREATION_DATE]}
-          label={RouteFields.CREATION_DATE}
-          setFieldSorting={setFieldSorting}
-          type="date"
-          title={RouteFields.CREATION_DATE}
-        />
-        <FilterField
           fieldName={RouteFields.FROM_X}
           setFieldValue={setFieldValue}
           filterSorterField={filterSorter[RouteFields.FROM_X]}
@@ -132,6 +123,15 @@ export const Sorter: React.FC = () => {
           setFieldSorting={setFieldSorting}
           type="number"
           title={getFieldLabel(RouteFields.DISTANCE)}
+        />
+        <FilterField
+          fieldName={RouteFields.CREATION_DATE}
+          setFieldValue={setFieldValue}
+          filterSorterField={filterSorter[RouteFields.CREATION_DATE]}
+          label={RouteFields.CREATION_DATE}
+          setFieldSorting={setFieldSorting}
+          type="date"
+          title={RouteFields.CREATION_DATE}
         />
         <Button variant="contained" fullWidth>
           Apply

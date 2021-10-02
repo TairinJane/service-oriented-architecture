@@ -18,14 +18,12 @@ const DateField: React.FC<DateFieldProps> = ({
   fieldName,
   label,
 }) => (
-  <LocalizationProvider dateAdapter={DateAdapter}>
-    <DatePicker
-      value={value ? new Date(value) : null}
-      onChange={value => setFieldValue(fieldName, value?.toISOString() || '')}
-      renderInput={params => <TextField fullWidth size="small" {...params} />}
-      label={label}
-    />
-  </LocalizationProvider>
+  <DatePicker
+    value={value ? new Date(value) : null}
+    onChange={value => setFieldValue(fieldName, value?.toISOString() || '')}
+    renderInput={params => <TextField fullWidth size="small" {...params} />}
+    label={label}
+  />
 );
 
 type FilterFieldProps = {

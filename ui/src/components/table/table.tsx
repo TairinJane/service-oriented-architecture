@@ -3,6 +3,7 @@ import { Route } from '../../store/routes.slice';
 import { RoutesTableFooter } from './table.footer';
 import { RoutesTableHeader } from './table.header';
 import { RoutesTableRow } from './table.row';
+import { useSelector } from '../../store/hooks';
 import { useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -11,7 +12,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 
-const rows: Route[] = [
+const routes: Route[] = [
   {
     id: 1,
     name: 'R1',
@@ -33,12 +34,15 @@ const rows: Route[] = [
 ];
 
 export const RoutesTable = () => {
+  const { status } = useSelector(state => state.routes);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const [editIndex, setEditIndex] = useState<number>();
+
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - routes.length) : 0;
 
   const onPageChange = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -54,7 +58,7 @@ export const RoutesTable = () => {
     setPage(0);
   };
 
-  const shownRows = rows.slice(
+  const shownRows = routes.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage,
   );
@@ -69,7 +73,8 @@ export const RoutesTable = () => {
               route={row}
               key={index}
               index={index}
-              isEditing={false}
+              isEditing={editIndex == index}
+              setEditing={setEditIndex}
             />
           ))}
           {emptyRows > 0 && (
@@ -83,7 +88,7 @@ export const RoutesTable = () => {
           rowsPerPage={rowsPerPage}
           onPageChange={onPageChange}
           onRowsPerPageChange={onRowsPerPageChange}
-          rowsCount={rows.length}
+          rowsCount={routes.length}
         />
       </Table>
     </TableContainer>

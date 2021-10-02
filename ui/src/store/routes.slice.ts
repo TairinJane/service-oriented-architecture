@@ -31,8 +31,18 @@ export type Route = {
   distance: number;
 };
 
+export type RoutePartial = {
+  id?: number;
+  name: string | null;
+  coordinates: Partial<Coordinates>;
+  from?: Partial<LocationFrom>;
+  to: Partial<LocationTo>;
+  creationDate: Date | null;
+  distance: number | null;
+};
+
 type RoutesSlice = {
-  routes: Route[];
+  entities: Route[];
   status: Status;
 };
 
@@ -44,7 +54,7 @@ enum Status {
 }
 
 const initialState: RoutesSlice = {
-  routes: [],
+  entities: [],
   status: Status.IDLE,
 };
 
@@ -59,7 +69,7 @@ export const routesSlice = createSlice({
       })
       .addCase(RoutesThunks.getRoutes.fulfilled, (state, action) => {
         state.status = Status.LOADED;
-        state.routes = action.payload;
+        state.entities = action.payload;
       })
       .addCase(RoutesThunks.getRoutes.rejected, state => {
         state.status = Status.ERROR;

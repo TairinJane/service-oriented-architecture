@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { Button, TableCell } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import Box from '@mui/material/Box';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
 import IconButton from '@mui/material/IconButton';
@@ -105,9 +107,12 @@ export const RoutesTableFooter: React.FC<RoutesTableFooterProps> = ({
   return (
     <TableFooter>
       <TableRow>
+        <TableCell>
+          <Button startIcon={<AddIcon />}>Add Route</Button>
+        </TableCell>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
-          colSpan={3}
+          colSpan={6}
           count={-1}
           rowsPerPage={rowsPerPage}
           page={page}

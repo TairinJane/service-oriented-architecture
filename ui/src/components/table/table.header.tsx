@@ -1,16 +1,32 @@
-import { TableCell, TableHead, TableRow } from '@mui/material';
+import {
+  TableCell,
+  TableHead,
+  TableRow,
+  tableCellClasses,
+} from '@mui/material';
+import { styled } from '@mui/styles';
 import React from 'react';
+
+const HeaderTableCell = styled(TableCell)(() => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: '#42a5f5',
+    color: 'white',
+    fontWeight: 'bold',
+  },
+}));
 
 export const RoutesTableHeader: React.FC = () => {
   return (
     <TableHead>
-      <TableRow>
-        <TableCell>Id</TableCell>
-        <TableCell align="right">Name</TableCell>
-        <TableCell align="right">Coordinates</TableCell>
-        <TableCell align="right">From</TableCell>
-        <TableCell align="right">To</TableCell>
-        <TableCell align="right">Distance</TableCell>
+      <TableRow className="table__header">
+        <HeaderTableCell>Id</HeaderTableCell>
+        <HeaderTableCell align="right">Name</HeaderTableCell>
+        <HeaderTableCell align="right">Coordinates (X;Y)</HeaderTableCell>
+        <HeaderTableCell align="right">From Name(X;Y)</HeaderTableCell>
+        <HeaderTableCell align="right">To (X;Y;Z)</HeaderTableCell>
+        <HeaderTableCell align="right">Distance</HeaderTableCell>
+        <HeaderTableCell align="right">Creation Date</HeaderTableCell>
+        <HeaderTableCell align="right">Actions</HeaderTableCell>
       </TableRow>
     </TableHead>
   );
