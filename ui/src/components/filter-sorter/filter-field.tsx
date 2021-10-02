@@ -1,6 +1,6 @@
+import { Box, Grid, TextField } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/lab';
 import { FilterSorterField, RouteFields, SortType } from './config';
-import { Grid, TextField } from '@mui/material';
 import { SortingInput } from './sorting-input';
 import DateAdapter from '@mui/lab/AdapterDateFns';
 import React from 'react';
@@ -48,7 +48,7 @@ export const FilterField: React.FC<FilterFieldProps> = ({
   label,
 }) => {
   return (
-    <Grid item xs={12}>
+    <Box>
       {title && <div className="section-label">{title}</div>}
       <Grid container spacing={1} alignItems="center">
         <Grid item xs>
@@ -78,6 +78,6 @@ export const FilterField: React.FC<FilterFieldProps> = ({
           />
         </Grid>
       </Grid>
-    </Grid>
+    </Box>
   );
 };

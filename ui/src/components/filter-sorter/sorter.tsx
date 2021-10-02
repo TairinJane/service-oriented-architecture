@@ -1,5 +1,5 @@
 import './sorter.css';
-import { Alert, Grid, Paper } from '@mui/material';
+import { Alert, Button, Paper, Stack } from '@mui/material';
 import { FilterField } from './filter-field';
 import {
   RouteFields,
@@ -29,7 +29,7 @@ export const Sorter: React.FC = () => {
 
   return (
     <Paper variant="outlined" className="sorter">
-      <Grid container spacing={1} direction="column">
+      <Stack spacing={1} direction="column">
         <FilterField
           fieldName={RouteFields.ID}
           setFieldValue={setFieldValue}
@@ -133,9 +133,12 @@ export const Sorter: React.FC = () => {
           type="number"
           title={getFieldLabel(RouteFields.DISTANCE)}
         />
-      </Grid>
+        <Button variant="contained" fullWidth>
+          Apply
+        </Button>
+      </Stack>
       <Alert severity="info" style={{ marginTop: 8 }}>
-        <code>sorting: {JSON.stringify(filterSorter)}</code>
+        <code>{JSON.stringify(filterSorter)}</code>
       </Alert>
     </Paper>
   );

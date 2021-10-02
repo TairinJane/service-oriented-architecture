@@ -1,7 +1,7 @@
 import './layout.css';
 import { Container, Grid } from '@mui/material';
+import { RoutesTable } from './table/table';
 import { Sorter } from './filter-sorter/sorter';
-import { Table } from './table/table';
 import React from 'react';
 
 const Header = () => (
@@ -13,17 +13,17 @@ const Header = () => (
 export const Layout: React.FC = () => {
   return (
     <div className="layout">
-      <Container>
+      <Container maxWidth="xl">
         <Header />
+        <Grid container spacing={3}>
+          <Grid item xs={3}>
+            <Sorter />
+          </Grid>
+          <Grid item xs={9}>
+            <RoutesTable />
+          </Grid>
+        </Grid>
       </Container>
-      <Grid container spacing={1}>
-        <Grid item xs={3}>
-          <Sorter />
-        </Grid>
-        <Grid item xs={9}>
-          <Table />
-        </Grid>
-      </Grid>
     </div>
   );
 };

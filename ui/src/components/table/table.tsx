@@ -1,72 +1,91 @@
-import { Alert } from '@mui/material';
-import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
-import React, { useCallback, useEffect, useState } from 'react';
+import * as React from 'react';
+import { Route } from '../../store/routes.slice';
+import { RoutesTableFooter } from './table.footer';
+import { RoutesTableHeader } from './table.header';
+import { RoutesTableRow } from './table.row';
+import { useState } from 'react';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableRow from '@mui/material/TableRow';
 
-const rows: GridRowsProp = [
-  { id: 1, col1: 'Hello', col2: 'World' },
-  { id: 2, col1: 'DataGridPro', col2: 'is Awesome' },
-  { id: 3, col1: 'Material-UI', col2: 'is Amazing' },
-];
-
-const columns: GridColDef[] = [
+const rows: Route[] = [
   {
-    field: 'col1',
-    headerName: 'Column 1',
-    width: 150,
-    editable: true,
-    sortable: false,
+    id: 1,
+    name: 'R1',
+    from: { x: 1, y: 2, name: 'From1', id: 1 },
+    coordinates: { x: 6, y: 8, id: 4 },
+    to: { x: 6, y: 8, z: 7, id: 15 },
+    creationDate: new Date(),
+    distance: 16,
   },
   {
-    field: 'col2',
-    headerName: 'Column 2',
-    width: 150,
-    editable: true,
-    sortable: false,
+    id: 9,
+    name: 'R9',
+    from: { x: 1, y: 2, name: 'From0', id: 1 },
+    coordinates: { x: 6.888, y: 8, id: 4 },
+    to: { x: 6, y: 8, z: 7.085, id: 15 },
+    creationDate: new Date(),
+    distance: 16.94,
   },
 ];
 
-const rowsPerPageOptions = [5, 10, 25, 50];
-
-export const Table: React.FC = () => {
-  const [pageSize, setPageSize] = useState(10);
+export const RoutesTable = () => {
   const [page, setPage] = useState(0);
-  const [editRowsModel, setEditRowsModel] = useState({});
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const onPageChange = useCallback(() => {
-    //fetch new page if needed
-  }, []);
+  // Avoid a layout jump when reaching the last page with empty rows.
+  const emptyRows =
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-  useEffect(() => {
-    onPageChange();
-  }, [page]);
+  const onPageChange = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number,
+  ) => {
+    setPage(newPage);
+  };
 
-  const onRowEditCommit = useCallback(() => {
-    //send new value on server
-    console.log(editRowsModel);
-  }, [rows, editRowsModel]);
+  const onRowsPerPageChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const shownRows = rows.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage,
+  );
 
   return (
-    <div style={{ height: 300, width: '100%' }}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        rowCount={100}
-        rowsPerPageOptions={rowsPerPageOptions}
-        paginationMode="server"
-        pageSize={pageSize}
-        onPageSizeChange={setPageSize}
-        onPageChange={setPage}
-        editMode="row"
-        editRowsModel={editRowsModel}
-        onEditRowsModelChange={setEditRowsModel}
-        disableColumnFilter
-        disableColumnMenu
-        disableSelectionOnClick
-        onRowEditCommit={onRowEditCommit}
-      />
-      <Alert severity="info" style={{ marginTop: 8 }}>
-        <code>editRowsModel: {JSON.stringify(editRowsModel)}</code>
-      </Alert>
-    </div>
+    <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 500 }} aria-label="routes table">
+        <RoutesTableHeader />
+        <TableBody>
+          {shownRows.map((row, index) => (
+            <RoutesTableRow
+              route={row}
+              key={index}
+              index={index}
+              isEditing={false}
+            />
+          ))}
+          {emptyRows > 0 && (
+            <TableRow style={{ height: 53 * emptyRows }}>
+              <TableCell colSpan={6} />
+            </TableRow>
+          )}
+        </TableBody>
+        <RoutesTableFooter
+          page={page}
+          rowsPerPage={rowsPerPage}
+          onPageChange={onPageChange}
+          onRowsPerPageChange={onRowsPerPageChange}
+          rowsCount={rows.length}
+        />
+      </Table>
+    </TableContainer>
   );
 };
