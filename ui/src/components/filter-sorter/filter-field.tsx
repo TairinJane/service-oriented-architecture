@@ -1,8 +1,7 @@
-import { Box, Grid, TextField } from '@mui/material';
-import { DatePicker, LocalizationProvider } from '@mui/lab';
+import { Box, Stack, TextField } from '@mui/material';
+import { DatePicker } from '@mui/lab';
 import { FilterSorterField, RouteFields, SortType } from './config';
 import { SortingInput } from './sorting-input';
-import DateAdapter from '@mui/lab/AdapterDateFns';
 import React from 'react';
 
 type DateFieldProps = {
@@ -48,34 +47,30 @@ export const FilterField: React.FC<FilterFieldProps> = ({
   return (
     <Box>
       {title && <div className="section-label">{title}</div>}
-      <Grid container spacing={1} alignItems="center">
-        <Grid item xs>
-          {type == 'date' ? (
-            <DateField
-              fieldName={fieldName}
-              setFieldValue={setFieldValue}
-              value={filterSorterField.value}
-              label={label}
-            />
-          ) : (
-            <TextField
-              label={label}
-              value={filterSorterField.value}
-              onChange={e => setFieldValue(fieldName, e.target.value)}
-              fullWidth
-              type={type}
-              size="small"
-            />
-          )}
-        </Grid>
-        <Grid item xs={4}>
-          <SortingInput
-            sorting={filterSorterField.sorting}
-            field={fieldName}
-            onChange={setFieldSorting}
+      <Stack spacing={1} alignItems="center">
+        {type == 'date' ? (
+          <DateField
+            fieldName={fieldName}
+            setFieldValue={setFieldValue}
+            value={filterSorterField.value}
+            label={label}
           />
-        </Grid>
-      </Grid>
+        ) : (
+          <TextField
+            label={label}
+            value={filterSorterField.value}
+            onChange={e => setFieldValue(fieldName, e.target.value)}
+            fullWidth
+            type={type}
+            size="small"
+          />
+        )}
+        <SortingInput
+          sorting={filterSorterField.sorting}
+          field={fieldName}
+          onChange={setFieldSorting}
+        />
+      </Stack>
     </Box>
   );
 };

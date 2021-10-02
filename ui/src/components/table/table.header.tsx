@@ -18,15 +18,17 @@ const HeaderTableCell = styled(TableCell)(() => ({
 export const RoutesTableHeader: React.FC = () => {
   return (
     <TableHead>
-      <TableRow className="table__header">
-        <HeaderTableCell>Id</HeaderTableCell>
+      <TableRow>
+        <HeaderTableCell size="small" width={10}>
+          Id
+        </HeaderTableCell>
         <HeaderTableCell align="right">Name</HeaderTableCell>
         <HeaderTableCell align="right">Coordinates (X;Y)</HeaderTableCell>
         <HeaderTableCell align="right">From Name(X;Y)</HeaderTableCell>
         <HeaderTableCell align="right">To (X;Y;Z)</HeaderTableCell>
         <HeaderTableCell align="right">Distance</HeaderTableCell>
         <HeaderTableCell align="right">Creation Date</HeaderTableCell>
-        <HeaderTableCell align="right">Actions</HeaderTableCell>
+        <HeaderTableCell align="right" />
       </TableRow>
     </TableHead>
   );

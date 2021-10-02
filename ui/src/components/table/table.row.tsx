@@ -26,7 +26,9 @@ const EditingRow = ({ route, setEditing }: EditingRowProps) => {
 
   return (
     <TableRow selected>
-      <TableCell size="small">{route.id}</TableCell>
+      <TableCell size="small" width={10}>
+        {route.id}
+      </TableCell>
       <TableCell align="right">
         <TextField
           value={routeEdit.name}
@@ -184,11 +186,11 @@ const EditingRow = ({ route, setEditing }: EditingRowProps) => {
         />
       </TableCell>
       <TableCell align="right">
-        <IconButton>
-          <SaveIcon />
+        <IconButton size="small">
+          <SaveIcon fontSize="small" />
         </IconButton>
-        <IconButton onClick={() => setEditing(-1)}>
-          <CancelIcon />
+        <IconButton size="small" onClick={() => setEditing(-1)}>
+          <CancelIcon fontSize="small" />
         </IconButton>
       </TableCell>
     </TableRow>
@@ -218,11 +220,11 @@ export const RoutesTableRow: React.FC<RoutesTableRowProps> = ({
         {route.creationDate.toLocaleDateString('ru')}
       </TableCell>
       <TableCell align="right">
-        <IconButton onClick={() => setEditing(index)}>
-          <EditIcon />
+        <IconButton onClick={() => setEditing(index)} size="small">
+          <EditIcon fontSize="small" />
         </IconButton>
-        <IconButton>
-          <DeleteIcon />
+        <IconButton size="small">
+          <DeleteIcon fontSize="small" />
         </IconButton>
       </TableCell>
     </TableRow>

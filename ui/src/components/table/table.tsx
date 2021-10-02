@@ -65,7 +65,12 @@ export const RoutesTable = () => {
 
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 500 }} aria-label="routes table">
+      <Table
+        sx={{ minWidth: 500 }}
+        aria-label="routes table"
+        style={{ tableLayout: 'auto' }}
+        size="small"
+      >
         <RoutesTableHeader />
         <TableBody>
           {shownRows.map((row, index) => (

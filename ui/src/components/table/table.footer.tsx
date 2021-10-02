@@ -107,7 +107,7 @@ export const RoutesTableFooter: React.FC<RoutesTableFooterProps> = ({
   return (
     <TableFooter>
       <TableRow>
-        <TableCell>
+        <TableCell colSpan={2}>
           <Button startIcon={<AddIcon />}>Add Route</Button>
         </TableCell>
         <TablePagination

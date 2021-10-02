@@ -1,5 +1,5 @@
 import './layout.css';
-import { Container, Grid } from '@mui/material';
+import { Container } from '@mui/material';
 import { LocalizationProvider } from '@mui/lab';
 import { RoutesTable } from './table/table';
 import { Sorter } from './filter-sorter/sorter';
@@ -18,14 +18,8 @@ export const Layout: React.FC = () => {
       <Container maxWidth="xl">
         <LocalizationProvider dateAdapter={DateAdapter}>
           <Header />
-          <Grid container spacing={3}>
-            <Grid item xs={3}>
-              <Sorter />
-            </Grid>
-            <Grid item xs={9}>
-              <RoutesTable />
-            </Grid>
-          </Grid>
+          <Sorter />
+          <RoutesTable />
         </LocalizationProvider>
       </Container>
     </div>
