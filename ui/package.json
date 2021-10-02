@@ -61,5 +61,6 @@
     "eslint-plugin-react": "7.22.0",
     "eslint-plugin-sort-imports-es6-autofix": "0.6.0",
     "prettier": "2.4.1"
-  }
+  },
+  "proxy": "http://localhost:8080"
 }

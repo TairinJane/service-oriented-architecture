@@ -10,10 +10,16 @@ const getRoutes = createAsyncThunk(
 
 const updateRoute = createAsyncThunk(
   ROUTES_THUNKS_BASE + 'update',
-  RoutesApi.getRoutes,
+  RoutesApi.updateRoute,
+);
+
+const deleteRoute = createAsyncThunk(
+  ROUTES_THUNKS_BASE + 'delete',
+  RoutesApi.deleteRouteById,
 );
 
 export const RoutesThunks = {
   getRoutes,
   updateRoute,
+  deleteRoute,
 };

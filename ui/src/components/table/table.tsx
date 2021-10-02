@@ -1,11 +1,15 @@
 import * as React from 'react';
 import { EditRoutePopup } from '../popups/edit-route-popup';
-import { Route, emptyRoute } from '../../store/routes.slice';
+import { FilterSorterContext } from '../filter.context';
+import { Route, RoutePartial, emptyRoute } from '../../store/routes.store';
+import { RoutesApi } from '../../api/routes.api';
 import { RoutesTableFooter } from './table.footer';
 import { RoutesTableHeader } from './table.header';
 import { RoutesTableRow } from './table.row';
-import { useSelector } from '../../store/hooks';
-import { useState } from 'react';
+import { RoutesThunks } from '../../thunks/routes.thunks';
+import { partialToRoute } from '../../util/util';
+import { useContext, useState } from 'react';
+import { useDispatch, useSelector } from '../../store/hooks';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -35,17 +39,16 @@ const routes: Route[] = [
 ];
 
 export const RoutesTable = () => {
+  const dispatch = useDispatch();
+
+  const { page, setPage, rowsPerPage, setRowsPerPage } =
+    useContext(FilterSorterContext);
+
   const { status } = useSelector(state => state.routes);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [editIndex, setEditIndex] = useState<number | null>();
   const [isPopupOpen, setPopupOpen] = useState(false);
   const rowToEdit = editIndex != null ? routes[editIndex] : emptyRoute;
-
-  // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - routes.length) : 0;
 
   const onPageChange = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -61,9 +64,17 @@ export const RoutesTable = () => {
     setPage(0);
   };
 
-  const onEdit = (index: number) => {
+  const onEditClick = (index: number) => {
     setEditIndex(index);
     setPopupOpen(true);
+  };
+
+  const onSubmit = (route: RoutePartial) => {
+    if (editIndex != null) {
+      dispatch(RoutesThunks.updateRoute(partialToRoute(route)));
+    } else {
+      RoutesApi.addRoute(partialToRoute(route));
+    }
   };
 
   const shownRows = routes.slice(
@@ -87,14 +98,9 @@ export const RoutesTable = () => {
                 route={row}
                 key={index}
                 index={index}
-                onEdit={onEdit}
+                onEdit={onEditClick}
               />
             ))}
-            {emptyRows > 0 && (
-              <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={6} />
-              </TableRow>
-            )}
           </TableBody>
           <RoutesTableFooter
             page={page}
@@ -110,9 +116,7 @@ export const RoutesTable = () => {
         <EditRoutePopup
           route={rowToEdit}
           isOpen={isPopupOpen}
-          onSubmit={route => {
-            console.log('submit:', route);
-          }}
+          onSubmit={onSubmit}
           onClose={() => {
             setEditIndex(null);
             setPopupOpen(false);

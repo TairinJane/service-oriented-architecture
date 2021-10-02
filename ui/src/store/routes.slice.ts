@@ -1,53 +1,6 @@
+import { Route } from './routes.store';
 import { RoutesThunks } from '../thunks/routes.thunks';
 import { createSlice } from '@reduxjs/toolkit';
-
-export type Coordinates = {
-  id?: number;
-  x: number;
-  y: number;
-};
-
-export type LocationFrom = {
-  id?: number;
-  x: number;
-  y: number;
-  name?: string;
-};
-
-export type LocationTo = {
-  id?: number;
-  x: number;
-  y: number;
-  z: number;
-};
-
-export type Route = {
-  id?: number;
-  name: string;
-  coordinates: Coordinates;
-  creationDate: Date;
-  from?: LocationFrom;
-  to: LocationTo;
-  distance: number;
-};
-
-export type RoutePartial = {
-  id?: number;
-  name?: string;
-  coordinates: Partial<Coordinates>;
-  from?: Partial<LocationFrom>;
-  to: Partial<LocationTo>;
-  creationDate: Date | null;
-  distance?: number;
-};
-
-export const emptyRoute: RoutePartial = {
-  name: '',
-  coordinates: {},
-  to: {},
-  creationDate: null,
-  distance: undefined,
-};
 
 type RoutesSlice = {
   entities: Route[];
@@ -80,6 +33,29 @@ export const routesSlice = createSlice({
         state.entities = action.payload;
       })
       .addCase(RoutesThunks.getRoutes.rejected, state => {
+        state.status = Status.ERROR;
+      })
+      .addCase(RoutesThunks.updateRoute.pending, state => {
+        state.status = Status.FETCHING;
+      })
+      .addCase(RoutesThunks.updateRoute.fulfilled, (state, action) => {
+        state.status = Status.LOADED;
+        state.entities = state.entities.concat(action.payload);
+      })
+      .addCase(RoutesThunks.updateRoute.rejected, state => {
+        state.status = Status.ERROR;
+      })
+      .addCase(RoutesThunks.deleteRoute.pending, state => {
+        state.status = Status.FETCHING;
+      })
+      .addCase(RoutesThunks.deleteRoute.fulfilled, (state, action) => {
+        state.status = Status.LOADED;
+        const deletedIndex = state.entities.findIndex(
+          route => route.id == action.payload,
+        );
+        state.entities = state.entities.splice(deletedIndex, 1);
+      })
+      .addCase(RoutesThunks.deleteRoute.rejected, state => {
         state.status = Status.ERROR;
       }),
 });

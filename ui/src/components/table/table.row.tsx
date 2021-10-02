@@ -1,5 +1,7 @@
 import { IconButton } from '@mui/material';
-import { Route } from '../../store/routes.slice';
+import { Route } from '../../store/routes.store';
+import { RoutesThunks } from '../../thunks/routes.thunks';
+import { useDispatch } from '../../store/hooks';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import React from 'react';
@@ -17,6 +19,12 @@ export const RoutesTableRow: React.FC<RoutesTableRowProps> = ({
   index,
   onEdit,
 }) => {
+  const dispatch = useDispatch();
+
+  const deleteRow = () => {
+    dispatch(RoutesThunks.deleteRoute(index));
+  };
+
   return (
     <TableRow hover>
       <TableCell size="small">{route.id}</TableCell>
@@ -36,7 +44,7 @@ export const RoutesTableRow: React.FC<RoutesTableRowProps> = ({
         <IconButton onClick={() => onEdit(index)} size="small">
           <EditIcon fontSize="small" />
         </IconButton>
-        <IconButton size="small">
+        <IconButton onClick={deleteRow} size="small">
           <DeleteIcon fontSize="small" />
         </IconButton>
       </TableCell>

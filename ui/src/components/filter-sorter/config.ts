@@ -3,7 +3,7 @@ import { capitalize } from '../../util/util';
 export type SortType = 'asc' | 'desc' | '';
 
 export type FilterSorterField = { sorting: SortType; value: string };
-type Sorting = Record<RouteFields, FilterSorterField>;
+export type Sorting = Record<RouteFields, FilterSorterField>;
 
 export enum RouteFields {
   ID = 'id',

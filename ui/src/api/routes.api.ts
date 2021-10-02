@@ -1,4 +1,4 @@
-import { Route } from '../store/routes.slice';
+import { Route } from '../store/routes.store';
 import { stringify } from 'query-string';
 
 const ROUTES_API_BASE = '/api/routes';
@@ -38,10 +38,10 @@ const updateRoute = (route: Route): Promise<Route> => {
   }).then(res => res.json());
 };
 
-const deleteRouteById = (id: number): Promise<boolean> => {
+const deleteRouteById = (id: number): Promise<number> => {
   return fetch(`${ROUTES_API_BASE}/${id}`, {
     method: 'DELETE',
-  }).then(res => res.ok);
+  }).then(res => id);
 };
 
 const deleteWithDistance = (distance: number): Promise<boolean> => {

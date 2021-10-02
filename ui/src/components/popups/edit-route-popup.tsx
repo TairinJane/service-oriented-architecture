@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { DatePicker } from '@mui/lab';
-import { RoutePartial } from '../../store/routes.slice';
+import { RoutePartial } from '../../store/routes.store';
 import { Stack } from '@mui/material';
 import { useState } from 'react';
 import Button from '@mui/material/Button';
@@ -40,9 +40,10 @@ export const EditRoutePopup: React.FC<EditRoutePopupProps> = ({
             fullWidth
             size="small"
             label="Name"
+            required
           />
           <div>Coordinates</div>
-          <Stack direction="row" alignItems="center">
+          <Stack direction="row" alignItems="center" spacing={0.5}>
             {'('}
             <TextField
               value={routeEdit.coordinates.x}
@@ -55,6 +56,7 @@ export const EditRoutePopup: React.FC<EditRoutePopupProps> = ({
               size="small"
               type="number"
               label="X"
+              required
             />
             {';'}
             <TextField
@@ -68,11 +70,12 @@ export const EditRoutePopup: React.FC<EditRoutePopupProps> = ({
               size="small"
               type="number"
               label="Y"
+              required
             />
             {')'}
           </Stack>
           <div>From</div>
-          <Stack direction="row" alignItems="center">
+          <Stack direction="row" alignItems="center" spacing={0.5}>
             <TextField
               value={routeEdit.from?.name}
               onChange={e =>
@@ -126,7 +129,7 @@ export const EditRoutePopup: React.FC<EditRoutePopupProps> = ({
             {')'}
           </Stack>
           <div>To</div>
-          <Stack direction="row" alignItems="center">
+          <Stack direction="row" alignItems="center" spacing={0.5}>
             {'('}
             <TextField
               value={routeEdit.to.x}
@@ -139,6 +142,7 @@ export const EditRoutePopup: React.FC<EditRoutePopupProps> = ({
               size="small"
               type="number"
               label="X"
+              required
             />
             {';'}
             <TextField
@@ -152,6 +156,7 @@ export const EditRoutePopup: React.FC<EditRoutePopupProps> = ({
               size="small"
               type="number"
               label="Y"
+              required
             />
             {';'}
             <TextField
@@ -165,6 +170,7 @@ export const EditRoutePopup: React.FC<EditRoutePopupProps> = ({
               size="small"
               type="number"
               label="Z"
+              required
             />
             {')'}
           </Stack>
@@ -178,6 +184,7 @@ export const EditRoutePopup: React.FC<EditRoutePopupProps> = ({
             size="small"
             type="number"
             label="Distance"
+            required
           />
           <div>Creation Date</div>
           <DatePicker
@@ -189,7 +196,7 @@ export const EditRoutePopup: React.FC<EditRoutePopupProps> = ({
               setRouteEdit(route => ({ ...route, creationDate: value }))
             }
             renderInput={params => (
-              <TextField fullWidth size="small" {...params} />
+              <TextField fullWidth size="small" required {...params} />
             )}
             label="Creation Date"
           />
