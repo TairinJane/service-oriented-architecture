@@ -1,6 +1,7 @@
 import './layout.css';
-import { Container } from '@mui/material';
-import { FilterSorterContext } from './filter-sorter/filter.context';
+import { AdditionalActions } from './additional-actions/additional-actions';
+import { Container, Stack } from '@mui/material';
+import { FilterSorterContext } from './filter-sorter/filter-sorter-context';
 import { LocalizationProvider } from '@mui/lab';
 import DateAdapter from '@mui/lab/AdapterDateFns';
 import React from 'react';
@@ -16,8 +17,11 @@ export const Layout: React.FC = () => {
     <div className="layout">
       <Container maxWidth="xl">
         <LocalizationProvider dateAdapter={DateAdapter}>
-          <Header />
-          <FilterSorterContext />
+          <Stack spacing={1}>
+            <Header />
+            <AdditionalActions />
+            <FilterSorterContext />
+          </Stack>
         </LocalizationProvider>
       </Container>
     </div>
