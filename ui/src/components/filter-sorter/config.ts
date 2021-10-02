@@ -3,7 +3,7 @@ import { capitalize } from '../../util/util';
 export type SortType = 'asc' | 'desc' | '';
 
 export type FilterSorterField = { sorting: SortType; value: string };
-export type Sorting = Record<RouteFields, FilterSorterField>;
+export type FilterSorter = Record<RouteFields, FilterSorterField>;
 
 export enum RouteFields {
   ID = 'id',
@@ -20,16 +20,15 @@ export enum RouteFields {
   DISTANCE = 'distance',
 }
 
-export const initialFilterSorter: Sorting = Object.values(RouteFields).reduce(
-  (sorting, field) => {
-    sorting[field] = {
-      sorting: '',
-      value: '',
-    };
-    return sorting;
-  },
-  {} as Sorting,
-);
+export const initialFilterSorter: FilterSorter = Object.values(
+  RouteFields,
+).reduce((sorting, field) => {
+  sorting[field] = {
+    sorting: '',
+    value: '',
+  };
+  return sorting;
+}, {} as FilterSorter);
 
 export const getFieldLabel = (routeField: RouteFields) =>
   capitalize(routeField.split('.')[0]);
@@ -44,9 +43,9 @@ export type Field = {
   sorting: SortType;
 };
 type FieldContainer = { label: string; fields: Field[] };
-type FilterSorter = FieldContainer[];
+type FilterSorterConfig = FieldContainer[];
 
-export const filterSorterConfig: FilterSorter = [
+export const filterSorterConfig: FilterSorterConfig = [
   { label: 'Id', fields: [{ fieldName: 'id', value: null, sorting: '' }] },
   {
     label: 'Name',

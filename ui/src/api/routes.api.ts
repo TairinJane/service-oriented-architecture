@@ -1,13 +1,17 @@
 import { Route } from '../store/routes.store';
+import { RouteFields } from '../components/filter-sorter/config';
 import { stringify } from 'query-string';
 
 const ROUTES_API_BASE = '/api/routes';
 
+export type QuerySort = string[];
+export type QueryFilter = Partial<Record<RouteFields, any>>;
+
 type RoutesQuery = {
-  sort?: string;
+  sort?: QuerySort;
   limit?: number;
   offset?: number;
-  filter?: Partial<Route>;
+  filter?: QueryFilter;
 };
 
 const getRoutes = (query: RoutesQuery): Promise<Route[]> => {
@@ -17,6 +21,7 @@ const getRoutes = (query: RoutesQuery): Promise<Route[]> => {
     offset: query.offset || 0,
     ...query.filter,
   });
+  console.log(queryString);
   return fetch(`${ROUTES_API_BASE}?${queryString}`).then(res => res.json());
 };
 
@@ -38,16 +43,16 @@ const updateRoute = (route: Route): Promise<Route> => {
   }).then(res => res.json());
 };
 
-const deleteRouteById = (id: number): Promise<number> => {
+const deleteRouteById = (id: number): Promise<Route> => {
   return fetch(`${ROUTES_API_BASE}/${id}`, {
     method: 'DELETE',
-  }).then(res => id);
+  }).then(res => res.json());
 };
 
-const deleteWithDistance = (distance: number): Promise<boolean> => {
+const deleteWithDistance = (distance: number): Promise<Route> => {
   return fetch(`${ROUTES_API_BASE}/delete-with-distance?distance=${distance}`, {
     method: 'DELETE',
-  }).then(res => res.ok);
+  }).then(res => res.json());
 };
 
 const countShorterThan = (distance: number): Promise<number> => {

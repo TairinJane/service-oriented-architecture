@@ -51,7 +51,7 @@ export const routesSlice = createSlice({
       .addCase(RoutesThunks.deleteRoute.fulfilled, (state, action) => {
         state.status = Status.LOADED;
         const deletedIndex = state.entities.findIndex(
-          route => route.id == action.payload,
+          route => route.id == action.payload.id,
         );
         state.entities = state.entities.splice(deletedIndex, 1);
       })

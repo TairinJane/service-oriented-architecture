@@ -33,7 +33,7 @@ export const EditRoutePopup: React.FC<EditRoutePopupProps> = ({
           {routeEdit.id && <div>ID: {routeEdit.id}</div>}
           <div>Name</div>
           <TextField
-            value={routeEdit.name}
+            value={routeEdit.name || ''}
             onChange={e =>
               setRouteEdit(route => ({ ...route, name: e.target.value }))
             }
@@ -46,7 +46,7 @@ export const EditRoutePopup: React.FC<EditRoutePopupProps> = ({
           <Stack direction="row" alignItems="center" spacing={0.5}>
             {'('}
             <TextField
-              value={routeEdit.coordinates.x}
+              value={routeEdit.coordinates?.x || ''}
               onChange={e =>
                 setRouteEdit(route => ({
                   ...route,
@@ -60,7 +60,7 @@ export const EditRoutePopup: React.FC<EditRoutePopupProps> = ({
             />
             {';'}
             <TextField
-              value={routeEdit.coordinates.y}
+              value={routeEdit.coordinates?.y || ''}
               onChange={e =>
                 setRouteEdit(route => ({
                   ...route,
@@ -77,14 +77,12 @@ export const EditRoutePopup: React.FC<EditRoutePopupProps> = ({
           <div>From</div>
           <Stack direction="row" alignItems="center" spacing={0.5}>
             <TextField
-              value={routeEdit.from?.name}
+              value={routeEdit.from?.name || ''}
               onChange={e =>
                 setRouteEdit(route => ({
                   ...route,
                   from: {
                     ...route.from,
-                    x: route.from?.x || 0,
-                    y: route.from?.y || 0,
                     name: e.target.value,
                   },
                 }))
@@ -94,13 +92,12 @@ export const EditRoutePopup: React.FC<EditRoutePopupProps> = ({
             />
             {'('}
             <TextField
-              value={routeEdit.from?.x}
+              value={routeEdit.from?.x || ''}
               onChange={e =>
                 setRouteEdit(route => ({
                   ...route,
                   from: {
                     ...route.from,
-                    y: route.from?.y || 0,
                     x: +e.target.value || 0,
                   },
                 }))
@@ -111,13 +108,12 @@ export const EditRoutePopup: React.FC<EditRoutePopupProps> = ({
             />
             {';'}
             <TextField
-              value={routeEdit.from?.y}
+              value={routeEdit.from?.y || ''}
               onChange={e =>
                 setRouteEdit(route => ({
                   ...route,
                   from: {
                     ...route.from,
-                    x: route.from?.x || 0,
                     y: +e.target.value || 0,
                   },
                 }))
@@ -132,7 +128,7 @@ export const EditRoutePopup: React.FC<EditRoutePopupProps> = ({
           <Stack direction="row" alignItems="center" spacing={0.5}>
             {'('}
             <TextField
-              value={routeEdit.to.x}
+              value={routeEdit.to?.x || ''}
               onChange={e =>
                 setRouteEdit(route => ({
                   ...route,
@@ -146,7 +142,7 @@ export const EditRoutePopup: React.FC<EditRoutePopupProps> = ({
             />
             {';'}
             <TextField
-              value={routeEdit.to.y}
+              value={routeEdit.to?.y || ''}
               onChange={e =>
                 setRouteEdit(route => ({
                   ...route,
@@ -160,7 +156,7 @@ export const EditRoutePopup: React.FC<EditRoutePopupProps> = ({
             />
             {';'}
             <TextField
-              value={routeEdit.to.z}
+              value={routeEdit.to?.z || ''}
               onChange={e =>
                 setRouteEdit(route => ({
                   ...route,
@@ -176,7 +172,7 @@ export const EditRoutePopup: React.FC<EditRoutePopupProps> = ({
           </Stack>
           <div>Distance</div>
           <TextField
-            value={routeEdit.distance}
+            value={routeEdit.distance || ''}
             onChange={e =>
               setRouteEdit(route => ({ ...route, distance: +e.target.value }))
             }

@@ -30,11 +30,11 @@ export type Route = {
 
 export type RoutePartial = {
   id?: number;
-  name: string;
-  coordinates: Partial<Coordinates>;
+  name?: string;
+  coordinates?: Partial<Coordinates>;
   from?: Partial<LocationFrom>;
-  to: Partial<LocationTo>;
-  creationDate: Date | null;
+  to?: Partial<LocationTo>;
+  creationDate?: Date | null;
   distance?: number;
 };
 

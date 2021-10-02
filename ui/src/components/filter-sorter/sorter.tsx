@@ -2,31 +2,27 @@ import './sorter.css';
 import { Alert, Button, Paper, Stack } from '@mui/material';
 import { FilterField } from './filter-field';
 import {
+  FilterSorter,
   RouteFields,
   SortType,
   getFieldEndLabel,
   getFieldLabel,
-  initialFilterSorter,
 } from './config';
-import React, { useState } from 'react';
+import React from 'react';
 
-export const Sorter: React.FC = () => {
-  const [filterSorter, setFilterSorter] = useState(initialFilterSorter);
+type SorterProps = {
+  filterSorter: FilterSorter;
+  setFieldSorting: (field: RouteFields, sorting: SortType) => void;
+  setFieldValue: (field: RouteFields, value: string) => void;
+  getFilteredRoutes: () => void;
+};
 
-  const setFieldSorting = (field: RouteFields, sorting: SortType) => {
-    setFilterSorter({
-      ...filterSorter,
-      [field]: { ...filterSorter[field], sorting },
-    });
-  };
-
-  const setFieldValue = (field: RouteFields, value: string) => {
-    setFilterSorter({
-      ...filterSorter,
-      [field]: { ...filterSorter[field], value },
-    });
-  };
-
+export const Sorter: React.FC<SorterProps> = ({
+  filterSorter,
+  setFieldSorting,
+  setFieldValue,
+  getFilteredRoutes,
+}) => {
   return (
     <Paper variant="outlined" className="sorter">
       <Stack spacing={1}>
@@ -135,7 +131,7 @@ export const Sorter: React.FC = () => {
             title={RouteFields.CREATION_DATE}
           />
         </Stack>
-        <Button variant="contained" fullWidth>
+        <Button variant="contained" fullWidth onClick={getFilteredRoutes}>
           Apply
         </Button>
         <Alert severity="info" style={{ marginTop: 8 }}>

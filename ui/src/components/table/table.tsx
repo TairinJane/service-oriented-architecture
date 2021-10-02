@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { EditRoutePopup } from '../popups/edit-route-popup';
-import { FilterSorterContext } from '../filter.context';
 import { Route, RoutePartial, emptyRoute } from '../../store/routes.store';
 import { RoutesApi } from '../../api/routes.api';
 import { RoutesTableFooter } from './table.footer';
@@ -8,14 +7,12 @@ import { RoutesTableHeader } from './table.header';
 import { RoutesTableRow } from './table.row';
 import { RoutesThunks } from '../../thunks/routes.thunks';
 import { partialToRoute } from '../../util/util';
-import { useContext, useState } from 'react';
 import { useDispatch, useSelector } from '../../store/hooks';
+import { useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import TableRow from '@mui/material/TableRow';
 
 const routes: Route[] = [
   {
@@ -38,31 +35,31 @@ const routes: Route[] = [
   },
 ];
 
-export const RoutesTable = () => {
-  const dispatch = useDispatch();
+type RoutesTableProps = {
+  page: number;
+  onPageChange: (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number,
+  ) => void;
+  rowsPerPage: number;
+  onRowsPerPageChange: (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => void;
+};
 
-  const { page, setPage, rowsPerPage, setRowsPerPage } =
-    useContext(FilterSorterContext);
+export const RoutesTable: React.FC<RoutesTableProps> = ({
+  page,
+  onPageChange,
+  rowsPerPage,
+  onRowsPerPageChange,
+}) => {
+  const dispatch = useDispatch();
 
   const { status } = useSelector(state => state.routes);
 
   const [editIndex, setEditIndex] = useState<number | null>();
   const [isPopupOpen, setPopupOpen] = useState(false);
   const rowToEdit = editIndex != null ? routes[editIndex] : emptyRoute;
-
-  const onPageChange = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number,
-  ) => {
-    setPage(newPage);
-  };
-
-  const onRowsPerPageChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
 
   const onEditClick = (index: number) => {
     setEditIndex(index);
