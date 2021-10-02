@@ -33,12 +33,20 @@ export type Route = {
 
 export type RoutePartial = {
   id?: number;
-  name: string | null;
+  name?: string;
   coordinates: Partial<Coordinates>;
   from?: Partial<LocationFrom>;
   to: Partial<LocationTo>;
   creationDate: Date | null;
-  distance: number | null;
+  distance?: number;
+};
+
+export const emptyRoute: RoutePartial = {
+  name: '',
+  coordinates: {},
+  to: {},
+  creationDate: null,
+  distance: undefined,
 };
 
 type RoutesSlice = {

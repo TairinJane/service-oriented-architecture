@@ -96,6 +96,7 @@ type RoutesTableFooterProps = {
   onRowsPerPageChange: (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => void;
+  onAdd: () => void;
 };
 
 export const RoutesTableFooter: React.FC<RoutesTableFooterProps> = ({
@@ -103,12 +104,15 @@ export const RoutesTableFooter: React.FC<RoutesTableFooterProps> = ({
   rowsPerPage,
   onPageChange,
   onRowsPerPageChange,
+  onAdd,
 }) => {
   return (
     <TableFooter>
       <TableRow>
         <TableCell colSpan={2}>
-          <Button startIcon={<AddIcon />}>Add Route</Button>
+          <Button onClick={onAdd} startIcon={<AddIcon />}>
+            Add Route
+          </Button>
         </TableCell>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}

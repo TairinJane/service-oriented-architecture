@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Route } from '../../store/routes.slice';
+import { EditRoutePopup } from '../popups/edit-route-popup';
+import { Route, emptyRoute } from '../../store/routes.slice';
 import { RoutesTableFooter } from './table.footer';
 import { RoutesTableHeader } from './table.header';
 import { RoutesTableRow } from './table.row';
@@ -38,7 +39,9 @@ export const RoutesTable = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [editIndex, setEditIndex] = useState<number>();
+  const [editIndex, setEditIndex] = useState<number | null>();
+  const [isPopupOpen, setPopupOpen] = useState(false);
+  const rowToEdit = editIndex != null ? routes[editIndex] : emptyRoute;
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -58,44 +61,64 @@ export const RoutesTable = () => {
     setPage(0);
   };
 
+  const onEdit = (index: number) => {
+    setEditIndex(index);
+    setPopupOpen(true);
+  };
+
   const shownRows = routes.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage,
   );
 
   return (
-    <TableContainer component={Paper}>
-      <Table
-        sx={{ minWidth: 500 }}
-        aria-label="routes table"
-        style={{ tableLayout: 'auto' }}
-        size="small"
-      >
-        <RoutesTableHeader />
-        <TableBody>
-          {shownRows.map((row, index) => (
-            <RoutesTableRow
-              route={row}
-              key={index}
-              index={index}
-              isEditing={editIndex == index}
-              setEditing={setEditIndex}
-            />
-          ))}
-          {emptyRows > 0 && (
-            <TableRow style={{ height: 53 * emptyRows }}>
-              <TableCell colSpan={6} />
-            </TableRow>
-          )}
-        </TableBody>
-        <RoutesTableFooter
-          page={page}
-          rowsPerPage={rowsPerPage}
-          onPageChange={onPageChange}
-          onRowsPerPageChange={onRowsPerPageChange}
-          rowsCount={routes.length}
+    <>
+      <TableContainer component={Paper}>
+        <Table
+          sx={{ minWidth: 500 }}
+          aria-label="routes table"
+          style={{ tableLayout: 'auto' }}
+          size="small"
+        >
+          <RoutesTableHeader />
+          <TableBody>
+            {shownRows.map((row, index) => (
+              <RoutesTableRow
+                route={row}
+                key={index}
+                index={index}
+                onEdit={onEdit}
+              />
+            ))}
+            {emptyRows > 0 && (
+              <TableRow style={{ height: 53 * emptyRows }}>
+                <TableCell colSpan={6} />
+              </TableRow>
+            )}
+          </TableBody>
+          <RoutesTableFooter
+            page={page}
+            rowsPerPage={rowsPerPage}
+            onPageChange={onPageChange}
+            onRowsPerPageChange={onRowsPerPageChange}
+            rowsCount={routes.length}
+            onAdd={() => setPopupOpen(true)}
+          />
+        </Table>
+      </TableContainer>
+      {isPopupOpen && (
+        <EditRoutePopup
+          route={rowToEdit}
+          isOpen={isPopupOpen}
+          onSubmit={route => {
+            console.log('submit:', route);
+          }}
+          onClose={() => {
+            setEditIndex(null);
+            setPopupOpen(false);
+          }}
         />
-      </Table>
-    </TableContainer>
+      )}
+    </>
   );
 };
