@@ -7,7 +7,7 @@ type RoutesSlice = {
   status: Status;
 };
 
-enum Status {
+export enum Status {
   IDLE,
   FETCHING,
   LOADED,

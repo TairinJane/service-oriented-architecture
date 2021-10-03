@@ -23,9 +23,21 @@ export const separateFilterSorter = (
     }
     const value = filterSorter[routeKey].value;
     if (value) {
-      filter[routeKey] = value;
+      filter[routeKey] =
+        routeKey == RouteFields.CREATION_DATE
+          ? new Date(value).getTime()
+          : value;
     }
   });
 
   return { sort, filter };
+};
+
+export const callApi = async (url: string, init?: RequestInit) => {
+  const response = await fetch(url, init);
+  if (response.ok) {
+    return await response.json();
+  } else {
+    throw await response.text();
+  }
 };

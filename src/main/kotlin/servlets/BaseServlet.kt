@@ -21,38 +21,14 @@ class BaseServlet : HttpServlet() {
         val id = req.pathInfo?.toLong()
 
         if (id != null) {
-            //get by id
             val route = routeService.getRouteById(id)
             resp.writeJsonToBody(route)
+
         } else {
-            //sorting stuff
-            // http://localhost:8080/api/routes?sort=a&sort=-cccc&name=b
-            // http://localhost:8080/api/routes?sort=distance&distance=5
-
-            //TODO: вынести это в сервис, передавать туда параметр мапу
-
-            val respBody = resp.writer
-            val params = req.parameterMap //эту
-            params.entries.forEach { (k, v) ->
-                respBody.println("$k = ${v.contentToString()}")
-            }
-            respBody.println()
-
             req.checkAllowedParameters()
+            val params = req.parameterMap
 
-            val filter = parseFilterMap(params.filter { (key, _) -> key in Route.allFields })
-            respBody.println("== Filter")
-            respBody.println(filter.toString())
-
-            val sorting = params["sort"]?.let { parseSortingMap(it) } ?: mapOf()
-            respBody.println("== Sorting")
-            respBody.println(sorting.toString())
-
-            //TODO: check NumberFormatException message for var name
-            val limit = params["limit"]?.paramArrayToString()?.toInt() ?: 10
-            val offset = params["offset"]?.paramArrayToString()?.toInt() ?: 0
-
-            val filteredRoutes = routeService.filterRoutes(sorting, filter, limit, offset)
+            val filteredRoutes = routeService.filterRoutes(params)
             resp.writeJsonToBody(filteredRoutes)
         }
     }
@@ -85,45 +61,6 @@ class BaseServlet : HttpServlet() {
             throw IllegalArgumentException("Parameter 'id' is not a valid number")
         }
 
-    }
-
-    private fun parseSortingMap(sortingArray: Array<String>): Map<String, SortType> {
-        val sorting = mutableMapOf<String, SortType>()
-        sortingArray.forEach {
-            val sotType = if (it[0] == '-') SortType.DESC else SortType.ASC
-            val field = it.removePrefix("-")
-
-            if (field !in Route.allFields) throw IllegalArgumentException("Sorting parameter '$field' is not allowed")
-
-            sorting[field] = sotType
-        }
-        return sorting
-    }
-
-    private fun parseFilterMap(params: Map<String, Array<String>>): Map<String, Any> {
-        if (params.isEmpty()) return mapOf()
-
-        val filter = mutableMapOf<String, Any>()
-        params.forEach { (key, value) ->
-            val baseParam = key.split('.')[0]
-            if (baseParam !in Route.allFields) throw IllegalArgumentException("Filter parameter '$key' is not allowed")
-            else {
-                val valueString = value.paramArrayToString()
-                try {
-                    filter[key] = when (key) {
-                        "name" -> valueString
-                        "distance" -> valueString.toFloat()
-                        "creationDate" -> LocalDateTime.parse(valueString)
-                        else -> valueString
-                    }
-                } catch (e: NumberFormatException) {
-                    throw IllegalArgumentException("Parameter '$key' = $valueString is not a valid number")
-                } catch (e: DateTimeParseException) {
-                    throw IllegalArgumentException("Parameter '$key' = $valueString is not a valid date")
-                }
-            }
-        }
-        return filter
     }
 
     private fun HttpServletRequest.checkAllowedParameters() {

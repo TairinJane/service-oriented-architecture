@@ -38,7 +38,7 @@ export const RoutesTableRow: React.FC<RoutesTableRowProps> = ({
       <TableCell align="right">{`(${route.to.x};${route.to.y};${route.to.z})`}</TableCell>
       <TableCell align="right">{route.distance}</TableCell>
       <TableCell align="right">
-        {route.creationDate.toLocaleDateString('ru')}
+        {new Date(route.creationDate).toLocaleDateString('ru')}
       </TableCell>
       <TableCell align="right">
         <IconButton onClick={() => onEdit(index)} size="small">

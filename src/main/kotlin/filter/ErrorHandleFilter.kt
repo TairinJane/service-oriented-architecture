@@ -1,5 +1,6 @@
 package filter
 
+import com.google.gson.JsonParseException
 import javax.servlet.*
 import javax.servlet.annotation.WebFilter
 import javax.servlet.http.HttpServletResponse
@@ -18,6 +19,8 @@ class ErrorHandleFilter : Filter {
         } catch (e: IllegalArgumentException) {
             handleError(response, 400, e)
         } catch (e: ValidationException) {
+            handleError(response, 400, e)
+        } catch (e: JsonParseException) {
             handleError(response, 400, e)
         } catch (e: Exception) {
             handleError(response, 500, e)

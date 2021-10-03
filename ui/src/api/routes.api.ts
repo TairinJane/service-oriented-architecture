@@ -1,5 +1,6 @@
 import { Route, RoutePartial } from '../store/routes.store';
 import { RouteFields } from '../components/filter-sorter/config';
+import { callApi } from '../util/util';
 import { stringify } from 'query-string';
 
 const ROUTES_API_BASE = '/api/routes';
@@ -14,7 +15,7 @@ type RoutesQuery = {
   filter?: QueryFilter;
 };
 
-const getRoutes = (query: RoutesQuery): Promise<Route[]> => {
+const getRoutes = async (query: RoutesQuery): Promise<Route[]> => {
   const queryString = stringify({
     sort: query.sort,
     limit: query.limit || 10,
@@ -22,48 +23,51 @@ const getRoutes = (query: RoutesQuery): Promise<Route[]> => {
     ...query.filter,
   });
   console.log(queryString);
-  return fetch(`${ROUTES_API_BASE}?${queryString}`).then(res => res.json());
+  return await callApi(`${ROUTES_API_BASE}?${queryString}`);
 };
 
-const getRouteById = (id: number): Promise<Route> => {
-  return fetch(`${ROUTES_API_BASE}/${id}`).then(res => res.json());
+const getRouteById = async (id: number): Promise<Route> => {
+  return await callApi(`${ROUTES_API_BASE}/${id}`);
 };
 
-const addRoute = (route: RoutePartial): Promise<Route> => {
+const addRoute = async (route: RoutePartial): Promise<Route> => {
   console.log('add route:', route);
-  return fetch(`${ROUTES_API_BASE}`, {
+  return await callApi(`${ROUTES_API_BASE}`, {
     method: 'POST',
     body: JSON.stringify(route),
-  }).then(res => res.json());
+  });
 };
 
-const updateRoute = (route: Route): Promise<Route> => {
-  return fetch(`${ROUTES_API_BASE}`, {
+const updateRoute = async (route: Route): Promise<Route> => {
+  return await callApi(`${ROUTES_API_BASE}`, {
     method: 'PUT',
     body: JSON.stringify(route),
-  }).then(res => res.json());
+  });
 };
 
-const deleteRouteById = (id: number): Promise<Route> => {
-  return fetch(`${ROUTES_API_BASE}/${id}`, {
+const deleteRouteById = async (id: number): Promise<Route> => {
+  return await callApi(`${ROUTES_API_BASE}/${id}`, {
     method: 'DELETE',
-  }).then(res => res.json());
+  });
 };
 
-const deleteWithDistance = (distance: number): Promise<Route> => {
-  return fetch(`${ROUTES_API_BASE}/delete-with-distance?distance=${distance}`, {
-    method: 'DELETE',
-  }).then(res => res.json());
+const deleteWithDistance = async (distance: number): Promise<Route> => {
+  return await callApi(
+    `${ROUTES_API_BASE}/delete-with-distance?distance=${distance}`,
+    {
+      method: 'DELETE',
+    },
+  );
 };
 
-const countShorterThan = (distance: number): Promise<number> => {
-  return fetch(
+const countShorterThan = async (distance: number): Promise<number> => {
+  return await callApi(
     `${ROUTES_API_BASE}/count-shorter-than?distance=${distance}`,
-  ).then(res => res.json());
+  );
 };
 
-const getWithMinDistance = (): Promise<Route> => {
-  return fetch(`${ROUTES_API_BASE}/min-distance`).then(res => res.json());
+const getWithMinDistance = async (): Promise<Route> => {
+  return await callApi(`${ROUTES_API_BASE}/min-distance`);
 };
 
 export const RoutesApi = {

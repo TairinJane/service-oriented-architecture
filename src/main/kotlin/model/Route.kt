@@ -49,6 +49,7 @@ class Route(
     @NotNull
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "creation_date")
     val creationDate: Date? = Date()
 
     fun checkConstraints() {

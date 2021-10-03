@@ -22,7 +22,7 @@ export type Route = {
   id?: number;
   name: string;
   coordinates: Coordinates;
-  creationDate: Date;
+  creationDate: number;
   from?: LocationFrom;
   to: LocationTo;
   distance: number;
@@ -34,7 +34,7 @@ export type RoutePartial = {
   coordinates?: Partial<Coordinates>;
   from?: Partial<LocationFrom>;
   to?: Partial<LocationTo>;
-  creationDate?: Date | null;
+  creationDate?: number | null;
   distance?: number;
 };
 

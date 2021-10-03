@@ -1,12 +1,22 @@
 package util
 
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonPrimitive
+import com.google.gson.JsonSerializer
 import model.Route
+import java.util.*
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 private val gson = GsonBuilder()
-    .registerTypeAdapterFactory(NullableTypAdapterFactory())
+    .registerTypeAdapterFactory(NullableTypeAdapterFactory())
+    .registerTypeAdapter(
+        Date::class.java,
+        JsonDeserializer { json, _, _ -> Date(json.asJsonPrimitive.asLong) })
+    .registerTypeAdapter(
+        Date::class.java,
+        JsonSerializer<Date> { date, _, _ -> JsonPrimitive(date.time) })
     .create()
 
 fun <T> HttpServletResponse.writeJsonToBody(obj: T) {

@@ -11,7 +11,7 @@ import kotlin.jvm.internal.Reflection
 import kotlin.reflect.KClass
 import kotlin.reflect.full.memberProperties
 
-class NullableTypAdapterFactory : TypeAdapterFactory {
+class NullableTypeAdapterFactory : TypeAdapterFactory {
 
     override fun <T : Any> create(gson: Gson, type: TypeToken<T>): TypeAdapter<T>? {
 

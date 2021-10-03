@@ -3,8 +3,9 @@ package services
 import model.Route
 import repository.RouteRepository
 import util.SortType
-import javax.validation.Validation
-import javax.validation.ValidationException
+import util.paramArrayToString
+import java.time.LocalDateTime
+import java.time.format.DateTimeParseException
 
 class RouteService {
 
@@ -32,12 +33,19 @@ class RouteService {
         return routeRepository.deleteRoute(routeId)
     }
 
-    fun filterRoutes(
-        sorting: Map<String, SortType>,
-        filter: Map<String, Any>,
-        limit: Int = 10,
-        offset: Int = 0
-    ): List<Route> {
+    fun filterRoutes(params: Map<String, Array<String>>): List<Route> {
+        val filter = parseFilterMap(params.filter { (key, _) -> key in Route.allFields })
+        println("== Filter")
+        println(filter.toString())
+
+        val sorting = params["sort"]?.let { parseSortingMap(it) } ?: mapOf()
+        println("== Sorting")
+        println(sorting.toString())
+
+        //TODO: check NumberFormatException message for var name
+        val limit = params["limit"]?.paramArrayToString()?.toInt() ?: 10
+        val offset = params["offset"]?.paramArrayToString()?.toInt() ?: 0
+
         return routeRepository.filterRoutes(sorting, filter, limit, offset)
     }
 
@@ -51,5 +59,44 @@ class RouteService {
 
     fun countWithDistanceLessThan(distance: Float): Long {
         return routeRepository.countWithDistanceLessThan(distance)
+    }
+
+    private fun parseSortingMap(sortingArray: Array<String>): Map<String, SortType> {
+        val sorting = mutableMapOf<String, SortType>()
+        sortingArray.forEach {
+            val sotType = if (it[0] == '-') SortType.DESC else SortType.ASC
+            val field = it.removePrefix("-")
+
+            if (field !in Route.allFields) throw IllegalArgumentException("Sorting parameter '$field' is not allowed")
+
+            sorting[field] = sotType
+        }
+        return sorting
+    }
+
+    private fun parseFilterMap(params: Map<String, Array<String>>): Map<String, Any> {
+        if (params.isEmpty()) return mapOf()
+
+        val filter = mutableMapOf<String, Any>()
+        params.forEach { (key, value) ->
+            val baseParam = key.split('.')[0]
+            if (baseParam !in Route.allFields) throw IllegalArgumentException("Filter parameter '$key' is not allowed")
+            else {
+                val valueString = value.paramArrayToString()
+                try {
+                    filter[key] = when (key) {
+                        "name" -> valueString
+                        "distance" -> valueString.toFloat()
+                        "creationDate" -> LocalDateTime.parse(valueString)
+                        else -> valueString
+                    }
+                } catch (e: NumberFormatException) {
+                    throw IllegalArgumentException("Parameter '$key' = $valueString is not a valid number")
+                } catch (e: DateTimeParseException) {
+                    throw IllegalArgumentException("Parameter '$key' = $valueString is not a valid date")
+                }
+            }
+        }
+        return filter
     }
 }

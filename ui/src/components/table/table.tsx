@@ -6,9 +6,12 @@ import { RoutesTableFooter } from './table.footer';
 import { RoutesTableHeader } from './table.header';
 import { RoutesTableRow } from './table.row';
 import { RoutesThunks } from '../../thunks/routes.thunks';
+import { Status } from '../../store/routes.slice';
+import { TableCell, TableRow } from '@mui/material';
 import { partialToRoute } from '../../util/util';
 import { useDispatch, useSelector } from '../../store/hooks';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSnackbar } from 'notistack';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -21,7 +24,7 @@ const routes: Route[] = [
     from: { x: 1, y: 2, name: 'From1', id: 1 },
     coordinates: { x: 6, y: 8, id: 4 },
     to: { x: 6, y: 8, z: 7, id: 15 },
-    creationDate: new Date(),
+    creationDate: 16332714106565,
     distance: 16,
   },
   {
@@ -30,7 +33,7 @@ const routes: Route[] = [
     from: { x: 1, y: 2, name: 'From0', id: 1 },
     coordinates: { x: 6.888, y: 8, id: 4 },
     to: { x: 6, y: 8, z: 7.085, id: 15 },
-    creationDate: new Date(),
+    creationDate: 1633271412846,
     distance: 16.94,
   },
 ];
@@ -54,12 +57,18 @@ export const RoutesTable: React.FC<RoutesTableProps> = ({
   onRowsPerPageChange,
 }) => {
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
 
-  const { status } = useSelector(state => state.routes);
+  const { status, entities: routes } = useSelector(state => state.routes);
 
   const [editIndex, setEditIndex] = useState<number | null>();
   const [isPopupOpen, setPopupOpen] = useState(false);
   const rowToEdit = editIndex != null ? routes[editIndex] : emptyRoute;
+
+  useEffect(() => {
+    if (routes.length) return;
+    dispatch(RoutesThunks.getRoutes({ offset: 0, limit: rowsPerPage }));
+  }, []);
 
   const onEditClick = (index: number) => {
     setEditIndex(index);
@@ -70,7 +79,14 @@ export const RoutesTable: React.FC<RoutesTableProps> = ({
     if (editIndex != null) {
       dispatch(RoutesThunks.updateRoute(partialToRoute(route)));
     } else {
-      RoutesApi.addRoute(route);
+      RoutesApi.addRoute(route)
+        .then(route => {
+          enqueueSnackbar(`Route was added with id = ${route.id}`, {
+            variant: 'success',
+          });
+          setPopupOpen(false);
+        })
+        .catch(err => enqueueSnackbar(String(err), { variant: 'error' }));
     }
   };
 
@@ -98,6 +114,13 @@ export const RoutesTable: React.FC<RoutesTableProps> = ({
                 onEdit={onEditClick}
               />
             ))}
+            {status == Status.LOADED && !routes.length && (
+              <TableRow>
+                <TableCell colSpan={8} align="center">
+                  No Routes found
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
           <RoutesTableFooter
             page={page}
