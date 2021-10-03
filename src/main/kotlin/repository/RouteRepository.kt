@@ -79,10 +79,10 @@ class RouteRepository {
                 session.delete(route)
                 session.flush()
                 transaction.commit()
+                return route
             } else {
                 throw NoSuchElementException("No Route found with id = $routeId")
             }
-            return route
         } catch (e: Exception) {
             transaction.rollback()
             e.printStackTrace()

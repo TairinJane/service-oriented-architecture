@@ -4,7 +4,7 @@ import { RoutesThunks } from '../../thunks/routes.thunks';
 import { Sorter } from './sorter';
 import { separateFilterSorter } from '../../util/util';
 import { useDispatch, useSelector } from '../../store/hooks';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export const FilterSorterContext: React.FC = () => {
   const [filterSorter, setFilterSorter] = useState(initialFilterSorter);
@@ -45,6 +45,11 @@ export const FilterSorterContext: React.FC = () => {
     fetchRoutesWithFilter(0, rowsPerPage);
   };
 
+  useEffect(() => {
+    if (routes.length) return;
+    dispatch(RoutesThunks.getRoutes({ offset: 0, limit: rowsPerPage }));
+  }, []);
+
   const onPageChange = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number,
@@ -55,14 +60,6 @@ export const FilterSorterContext: React.FC = () => {
     if (routes.length < pageEnd && hasMore) {
       const offset = Math.max(routes.length, pageStart);
       const limit = Math.min(rowsPerPage, pageEnd - routes.length);
-      console.log({
-        length: routes.length,
-        pageStart,
-        pageEnd,
-        rowsPerPage,
-        limit,
-        offset,
-      });
       fetchRoutesWithFilter(offset, limit);
     }
   };
@@ -70,8 +67,14 @@ export const FilterSorterContext: React.FC = () => {
   const onRowsPerPageChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    const newRowsPerPage = parseInt(event.target.value, 10);
+    setRowsPerPage(newRowsPerPage);
     setPage(0);
+    if (routes.length < newRowsPerPage && hasMore) {
+      const offset = routes.length;
+      const limit = newRowsPerPage - routes.length;
+      fetchRoutesWithFilter(offset, limit);
+    }
   };
 
   const clearFilter = () => {

@@ -61,7 +61,7 @@ class BaseServlet : HttpServlet() {
                 ?: throw IllegalArgumentException("Parameter 'id' is required")
             val result = routeService.deleteRoute(id)
             resp.writeJsonToBody(result)
-            resp.status = 204
+            resp.status = 200
         } catch (e: NumberFormatException) {
             throw IllegalArgumentException("Parameter 'id' is not a valid number")
         }

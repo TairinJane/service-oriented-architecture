@@ -18,7 +18,9 @@ export const EmptyRow: React.FC<EmptyRowProps> = ({
         height: 43 * rowSpan,
       }}
     >
-      <TableCell colSpan={colSpan}>{text}</TableCell>
+      <TableCell colSpan={colSpan} align="center">
+        {text}
+      </TableCell>
     </TableRow>
   );
 };

@@ -11,8 +11,8 @@ import { Status } from '../../store/routes.slice';
 import { TableCell, TableRow } from '@mui/material';
 import { partialToRoute } from '../../util/util';
 import { useDispatch, useSelector } from '../../store/hooks';
-import { useEffect, useState } from 'react';
 import { useSnackbar } from 'notistack';
+import { useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -49,11 +49,6 @@ export const RoutesTable: React.FC<RoutesTableProps> = ({
   const [isPopupOpen, setPopupOpen] = useState(false);
   const rowToEdit = editIndex != null ? routes[editIndex] : emptyRoute;
 
-  useEffect(() => {
-    if (routes.length) return;
-    dispatch(RoutesThunks.getRoutes({ offset: 0, limit: rowsPerPage }));
-  }, []);
-
   const onEditClick = (index: number) => {
     setEditIndex(index);
     setPopupOpen(true);
@@ -78,7 +73,6 @@ export const RoutesTable: React.FC<RoutesTableProps> = ({
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage,
   );
-  console.log(shownRows.length, rowsPerPage);
 
   const nextPageAvailable =
     page * rowsPerPage + rowsPerPage < routes.length || hasMore;
@@ -86,19 +80,14 @@ export const RoutesTable: React.FC<RoutesTableProps> = ({
   return (
     <>
       <TableContainer component={Paper}>
-        <Table
-          sx={{ minWidth: 500 }}
-          aria-label="routes table"
-          style={{ tableLayout: 'auto' }}
-          size="small"
-        >
+        <Table sx={{ minWidth: 500 }} aria-label="routes table" size="small">
           <RoutesTableHeader />
           <TableBody>
-            {shownRows.map((row, index) => (
+            {shownRows.map(route => (
               <RoutesTableRow
-                route={row}
-                key={index}
-                index={index}
+                route={route}
+                key={route.id}
+                index={route.id || 0}
                 onEdit={onEditClick}
               />
             ))}
@@ -110,7 +99,11 @@ export const RoutesTable: React.FC<RoutesTableProps> = ({
               </TableRow>
             )}
             {shownRows.length < rowsPerPage && (
-              <EmptyRow rowSpan={rowsPerPage - shownRows.length} colSpan={8} />
+              <EmptyRow
+                rowSpan={rowsPerPage - shownRows.length}
+                colSpan={8}
+                text={status == Status.FETCHING ? 'Loading...' : ''}
+              />
             )}
           </TableBody>
           <RoutesTableFooter

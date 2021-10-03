@@ -40,7 +40,6 @@ export const routesSlice = createSlice({
           state.entities = state.entities.concat(action.payload);
         }
         if (action.payload.length < (query.limit || 5)) state.hasMore = false;
-        console.log({ query, hasMore: state.hasMore });
       })
       .addCase(RoutesThunks.getRoutes.rejected, state => {
         state.status = Status.ERROR;
@@ -55,18 +54,11 @@ export const routesSlice = createSlice({
       .addCase(RoutesThunks.updateRoute.rejected, state => {
         state.status = Status.ERROR;
       })
-      .addCase(RoutesThunks.deleteRoute.pending, state => {
-        state.status = Status.FETCHING;
-      })
       .addCase(RoutesThunks.deleteRoute.fulfilled, (state, action) => {
-        state.status = Status.LOADED;
         const deletedIndex = state.entities.findIndex(
           route => route.id == action.payload.id,
         );
-        state.entities = state.entities.splice(deletedIndex, 1);
-      })
-      .addCase(RoutesThunks.deleteRoute.rejected, state => {
-        state.status = Status.ERROR;
+        state.entities.splice(deletedIndex, 1);
       }),
 });
 
