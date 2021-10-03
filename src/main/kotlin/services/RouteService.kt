@@ -1,10 +1,11 @@
-package persistence
+package services
 
 import model.Route
+import repository.RouteRepository
 import util.SortType
-import javax.annotation.ManagedBean
+import javax.validation.Validation
+import javax.validation.ValidationException
 
-@ManagedBean
 class RouteService {
 
     companion object {
@@ -18,14 +19,16 @@ class RouteService {
     }
 
     fun newRoute(route: Route): Route {
+        route.checkConstraints()
         return routeRepository.addRoute(route)
     }
 
     fun updateRoute(route: Route): Route {
+        route.checkConstraints()
         return routeRepository.updateRoute(route)
     }
 
-    fun deleteRoute(routeId: Long): Boolean {
+    fun deleteRoute(routeId: Long): Route {
         return routeRepository.deleteRoute(routeId)
     }
 

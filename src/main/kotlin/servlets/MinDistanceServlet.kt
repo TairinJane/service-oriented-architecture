@@ -1,6 +1,6 @@
 package servlets
 
-import persistence.RouteService
+import services.RouteService
 import util.writeJsonToBody
 import javax.servlet.annotation.WebServlet
 import javax.servlet.http.HttpServlet

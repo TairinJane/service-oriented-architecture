@@ -1,4 +1,4 @@
-import { Route } from '../store/routes.store';
+import { Route, RoutePartial } from '../store/routes.store';
 import { RouteFields } from '../components/filter-sorter/config';
 import { stringify } from 'query-string';
 
@@ -29,7 +29,8 @@ const getRouteById = (id: number): Promise<Route> => {
   return fetch(`${ROUTES_API_BASE}/${id}`).then(res => res.json());
 };
 
-const addRoute = (route: Route): Promise<Route> => {
+const addRoute = (route: RoutePartial): Promise<Route> => {
+  console.log('add route:', route);
   return fetch(`${ROUTES_API_BASE}`, {
     method: 'POST',
     body: JSON.stringify(route),

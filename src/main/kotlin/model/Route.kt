@@ -1,7 +1,8 @@
 package model
 
 import jakarta.validation.constraints.NotBlank
-import java.time.LocalDateTime
+import org.hibernate.annotations.CreationTimestamp
+import util.Validator
 import java.util.*
 import javax.persistence.*
 import javax.validation.constraints.Min
@@ -9,6 +10,7 @@ import javax.validation.constraints.NotNull
 import kotlin.reflect.full.memberProperties
 
 @Entity
+@Table(name = "routes")
 class Route(
     //Поле не может быть null, Строка не может быть пустой
     @NotNull
@@ -17,33 +19,50 @@ class Route(
 
     //Поле не может быть null
     @NotNull
-    @OneToOne
+    @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "coordinates_id", nullable = false)
     var coordinates: Coordinates,
 
     //Поле может быть null
-    @OneToOne
+    @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "from_id")
-    var from: Location,
+    var from: LocationFrom?,
 
     //Поле не может быть null
     @NotNull
-    @OneToOne
+    @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "to_id", nullable = false)
-    var to: Location,
+    var to: LocationTo,
 
     //Значение поля должно быть больше 1
+    @NotNull
     @Min(value = 1, message = "Route distance should be greater than 1")
     var distance: Float
 ) {
     //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "route_generator")
+    @SequenceGenerator(name="route_generator", sequenceName = "route_seq")
     val id: Int = 1
 
     //Поле не может быть null, Значение этого поля должно генерироваться автоматически
     @NotNull
-    val creationDate: LocalDateTime = LocalDateTime.now()
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    val creationDate: Date? = Date()
+
+    fun checkConstraints() {
+        Validator.run {
+            notNull(name, "Name")
+            notBlank(name, "Name")
+            notNull(coordinates, "Coordinates")
+            coordinates.checkConstraints()
+            notNull(to, "To")
+            to.checkConstraints()
+            if (notNull(distance, "distance")) min(distance, "distance", 1f)
+            from?.checkConstraints()
+        }
+    }
 
     companion object {
         private val objectFields
@@ -55,4 +74,9 @@ class Route(
         val baseFields
             get() = allFields.filter { it !in objectFields }
     }
+
+    override fun toString(): String {
+        return "Route(name='$name', coordinates=$coordinates, from=$from, to=$to, distance=$distance, id=$id, creationDate=$creationDate)"
+    }
+
 }

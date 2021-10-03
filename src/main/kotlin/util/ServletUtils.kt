@@ -1,11 +1,13 @@
 package util
 
-import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import model.Route
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-private val gson = Gson()
+private val gson = GsonBuilder()
+    .registerTypeAdapterFactory(NullableTypAdapterFactory())
+    .create()
 
 fun <T> HttpServletResponse.writeJsonToBody(obj: T) {
     contentType = "application/json"
@@ -27,6 +29,7 @@ fun HttpServletRequest.readBody(): String {
 
 fun <T> HttpServletRequest.getObjectFromBody(cl: Class<T>): T {
     val body = readBody()
+    println("body: $body")
     return gson.fromJson(body, cl)
 }
 

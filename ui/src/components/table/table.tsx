@@ -70,7 +70,7 @@ export const RoutesTable: React.FC<RoutesTableProps> = ({
     if (editIndex != null) {
       dispatch(RoutesThunks.updateRoute(partialToRoute(route)));
     } else {
-      RoutesApi.addRoute(partialToRoute(route));
+      RoutesApi.addRoute(route);
     }
   };
 

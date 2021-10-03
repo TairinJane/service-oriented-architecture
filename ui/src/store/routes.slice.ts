@@ -30,7 +30,12 @@ export const routesSlice = createSlice({
       })
       .addCase(RoutesThunks.getRoutes.fulfilled, (state, action) => {
         state.status = Status.LOADED;
-        state.entities = action.payload;
+        const { arg: query } = action.meta;
+        if (query.offset == 0) {
+          state.entities = action.payload;
+        } else if (state.entities.length == query.offset) {
+          state.entities = state.entities.concat(action.payload);
+        }
       })
       .addCase(RoutesThunks.getRoutes.rejected, state => {
         state.status = Status.ERROR;

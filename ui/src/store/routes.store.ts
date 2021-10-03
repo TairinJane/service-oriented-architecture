@@ -39,9 +39,9 @@ export type RoutePartial = {
 };
 
 export const emptyRoute: RoutePartial = {
-  name: '',
-  coordinates: {},
-  to: {},
+  name: undefined,
+  coordinates: undefined,
+  to: undefined,
   creationDate: null,
   distance: undefined,
 };

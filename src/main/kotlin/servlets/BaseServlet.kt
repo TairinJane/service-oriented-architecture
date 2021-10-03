@@ -1,11 +1,10 @@
 package servlets
 
 import model.Route
-import persistence.RouteService
+import services.RouteService
 import util.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeParseException
-import javax.inject.Inject
 import javax.servlet.annotation.WebServlet
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
@@ -61,7 +60,7 @@ class BaseServlet : HttpServlet() {
     //new route - get params from body
     override fun doPost(req: HttpServletRequest, resp: HttpServletResponse) {
         val newRoute = req.getObjectFromBody(Route::class.java)
-        //TODO: validate new route
+        println("route to add: $newRoute")
         val route = routeService.newRoute(newRoute)
         resp.writeJsonToBody(route)
         resp.status = 201
@@ -70,7 +69,7 @@ class BaseServlet : HttpServlet() {
     //update route
     override fun doPut(req: HttpServletRequest, resp: HttpServletResponse) {
         val routeToUpdate = req.getObjectFromBody(Route::class.java)
-        //TODO: validate update route
+        println("route to update: $routeToUpdate")
         val route = routeService.updateRoute(routeToUpdate)
         resp.writeJsonToBody(route)
     }
@@ -80,9 +79,7 @@ class BaseServlet : HttpServlet() {
         try {
             val id = req.pathInfo?.toLong() ?: throw IllegalArgumentException("Parameter 'id' is required")
             val result = routeService.deleteRoute(id)
-            if (!result) {
-                throw NoSuchElementException("Couldn't delete Route with id = $id")
-            }
+            resp.writeJsonToBody(result)
             resp.status = 204
         } catch (e: NumberFormatException) {
             throw IllegalArgumentException("Parameter 'id' is not a valid number")

@@ -1,7 +1,7 @@
-package persistence
+package repository
 
 import model.Coordinates
-import model.Location
+import model.LocationFrom
 import model.Route
 import util.HibernateSessionFactory
 import util.SortType
@@ -67,7 +67,7 @@ class RouteRepository {
         }
     }
 
-    fun deleteRoute(routeId: Long): Boolean {
+    fun deleteRoute(routeId: Long): Route {
         val session =
             HibernateSessionFactory.sessionFactory?.openSession() ?: throw Exception("Couldn't create session")
         val transaction = session.beginTransaction() ?: throw Exception("Couldn't create transaction")
@@ -81,7 +81,7 @@ class RouteRepository {
             } else {
                 throw NoSuchElementException("No Route found with id = $routeId")
             }
-            return true
+            return route
         } catch (e: Exception) {
             transaction.rollback()
             e.printStackTrace()
@@ -191,8 +191,8 @@ class RouteRepository {
         if (filter.isEmpty()) return this
 
         val coordinatesJoin = root.join<Route, Coordinates>("coordinates")
-        val fromJoin = root.join<Route, Location>("from")
-        val toJoin = root.join<Route, Location>("to")
+        val fromJoin = root.join<Route, LocationFrom>("from")
+        val toJoin = root.join<Route, LocationFrom>("to")
 
         val filterList = filter.entries.map { (fieldName, value) ->
             val (table, field) = if ('.' in fieldName) fieldName.split('.') else listOf("", fieldName)

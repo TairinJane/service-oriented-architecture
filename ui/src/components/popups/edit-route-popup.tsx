@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { DatePicker } from '@mui/lab';
 import { RoutePartial } from '../../store/routes.store';
 import { Stack } from '@mui/material';
 import { useState } from 'react';
@@ -98,7 +97,7 @@ export const EditRoutePopup: React.FC<EditRoutePopupProps> = ({
                   ...route,
                   from: {
                     ...route.from,
-                    x: +e.target.value || 0,
+                    x: +e.target.value,
                   },
                 }))
               }
@@ -114,7 +113,7 @@ export const EditRoutePopup: React.FC<EditRoutePopupProps> = ({
                   ...route,
                   from: {
                     ...route.from,
-                    y: +e.target.value || 0,
+                    y: +e.target.value,
                   },
                 }))
               }
@@ -183,19 +182,9 @@ export const EditRoutePopup: React.FC<EditRoutePopupProps> = ({
             required
           />
           <div>Creation Date</div>
-          <DatePicker
-            value={
-              routeEdit.creationDate ? new Date(routeEdit.creationDate) : null
-            }
-            onChange={value =>
-              value &&
-              setRouteEdit(route => ({ ...route, creationDate: value }))
-            }
-            renderInput={params => (
-              <TextField fullWidth size="small" required {...params} />
-            )}
-            label="Creation Date"
-          />
+          <div>
+            {routeEdit.creationDate || new Date().toLocaleDateString('ru')}
+          </div>
         </Stack>
       </DialogContent>
       <DialogActions>

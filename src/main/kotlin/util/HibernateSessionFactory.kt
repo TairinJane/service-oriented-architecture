@@ -1,7 +1,8 @@
 package util
 
 import model.Coordinates
-import model.Location
+import model.LocationFrom
+import model.LocationTo
 import model.Route
 import org.hibernate.SessionFactory
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder
@@ -18,7 +19,8 @@ class HibernateSessionFactory {
                         configuration.apply {
                             addAnnotatedClass(Route::class.java)
                             addAnnotatedClass(Coordinates::class.java)
-                            addAnnotatedClass(Location::class.java)
+                            addAnnotatedClass(LocationFrom::class.java)
+                            addAnnotatedClass(LocationTo::class.java)
                         }
                         val serviceRegistry: ServiceRegistry = StandardServiceRegistryBuilder()
                             .applySettings(configuration.properties).build()
