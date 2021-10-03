@@ -29,9 +29,9 @@ export const CountShorterPopup: React.FC<CountShorterPopupProps> = ({
     <Dialog open={isOpen} onClose={onClose}>
       <DialogTitle>Count Routes shorter than ...</DialogTitle>
       <DialogContent>
-        <Stack>
+        <Stack spacing={1}>
           <TextField
-            value={distance}
+            value={distance || ''}
             onChange={e => setDistance(parseInt(e.target.value, 10))}
             fullWidth
             type="number"

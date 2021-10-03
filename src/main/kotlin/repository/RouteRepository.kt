@@ -9,7 +9,6 @@ import java.util.*
 import javax.persistence.criteria.CriteriaBuilder
 import javax.persistence.criteria.CriteriaQuery
 import javax.persistence.criteria.Root
-import kotlin.NoSuchElementException
 
 class RouteRepository {
 
@@ -19,7 +18,7 @@ class RouteRepository {
         var instance: RouteRepository = RouteRepository()
     }
 
-    fun getRouteById(routeId: Long): Route {
+    fun getRouteById(routeId: Int): Route {
         val session =
             HibernateSessionFactory.sessionFactory?.openSession() ?: throw Exception("Couldn't create session")
         val transaction = session.beginTransaction() ?: throw Exception("Couldn't create transaction")
@@ -69,7 +68,7 @@ class RouteRepository {
         }
     }
 
-    fun deleteRoute(routeId: Long): Route {
+    fun deleteRoute(routeId: Int): Route {
         val session =
             HibernateSessionFactory.sessionFactory?.openSession() ?: throw Exception("Couldn't create session")
         val transaction = session.beginTransaction() ?: throw Exception("Couldn't create transaction")
@@ -148,14 +147,20 @@ class RouteRepository {
         val session =
             HibernateSessionFactory.sessionFactory?.openSession() ?: throw Exception("Couldn't create session")
         val criteriaBuilder = session.criteriaBuilder
-        val criteriaQuery = criteriaBuilder.createQuery(Route::class.java)
-        val root = criteriaQuery.from(Route::class.java)
 
-        criteriaQuery.select(criteriaBuilder.min(root["distance"]))
+        val routeQuery = criteriaBuilder.createQuery(Route::class.java)
+        val root = routeQuery.from(Route::class.java)
+
+        val distanceQuery = routeQuery.subquery(Float::class.java)
+        val distanceRoot = distanceQuery.from(Route::class.java)
+
+        distanceQuery.select(criteriaBuilder.least(distanceRoot["distance"]))
+
+        routeQuery.select(root).where(criteriaBuilder.equal(root.get<Float>("distance"), distanceQuery))
 
         val transaction = session.beginTransaction()
         try {
-            val route = session.createQuery(criteriaQuery).singleResult
+            val route = session.createQuery(routeQuery).singleResult
             transaction.commit()
             return route
         } catch (e: Exception) {

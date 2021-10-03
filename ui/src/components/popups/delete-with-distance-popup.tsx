@@ -1,4 +1,5 @@
 import { Alert, Dialog, DialogContent, Stack } from '@mui/material';
+import { PrettyRoute } from './pretty-route';
 import { Route } from '../../store/routes.store';
 import { RoutesApi } from '../../api/routes.api';
 import Button from '@mui/material/Button';
@@ -19,7 +20,7 @@ export const DeleteWithDistancePopup: React.FC<DeleteWithDistancePopupProps> =
     const [error, setError] = useState();
 
     const onSubmit = (distance: number) => {
-      RoutesApi.getRouteById(distance)
+      RoutesApi.deleteWithDistance(distance)
         .then(res => setRoute(res))
         .catch(error => setError(error));
     };
@@ -28,9 +29,9 @@ export const DeleteWithDistancePopup: React.FC<DeleteWithDistancePopupProps> =
       <Dialog open={isOpen} onClose={onClose}>
         <DialogTitle>Delete Route with Distance = ...</DialogTitle>
         <DialogContent>
-          <Stack>
+          <Stack spacing={1}>
             <TextField
-              value={distance}
+              value={distance || ''}
               onChange={e => setDistance(parseInt(e.target.value, 10))}
               fullWidth
               type="number"
@@ -41,7 +42,7 @@ export const DeleteWithDistancePopup: React.FC<DeleteWithDistancePopupProps> =
             {route && (
               <Alert severity="success">
                 <div>Deleted route:</div>
-                <code>{JSON.stringify(route)}</code>
+                <PrettyRoute route={route} />
               </Alert>
             )}
             {error && <Alert severity="error">{error}</Alert>}

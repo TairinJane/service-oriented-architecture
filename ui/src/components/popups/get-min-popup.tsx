@@ -1,4 +1,5 @@
 import { Alert, Dialog, DialogContent } from '@mui/material';
+import { PrettyRoute } from './pretty-route';
 import { Route } from '../../store/routes.store';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
@@ -24,7 +25,7 @@ export const GetMinPopup: React.FC<GetMinPopupProps> = ({
       <DialogContent>
         {route && (
           <Alert severity="success">
-            <code>{JSON.stringify(route)}</code>
+            <PrettyRoute route={route} />
           </Alert>
         )}
         {error && <Alert severity="error">{error}</Alert>}

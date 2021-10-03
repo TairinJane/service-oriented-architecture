@@ -18,18 +18,22 @@ class BaseServlet : HttpServlet() {
 
     //{id} or sorting
     override fun doGet(req: HttpServletRequest, resp: HttpServletResponse) {
-        val id = req.pathInfo?.toLong()
+        try {
+            val id = req.pathInfo?.removePrefix("/")?.toInt()
 
-        if (id != null) {
-            val route = routeService.getRouteById(id)
-            resp.writeJsonToBody(route)
+            if (id != null) {
+                val route = routeService.getRouteById(id)
+                resp.writeJsonToBody(route)
 
-        } else {
-            req.checkAllowedParameters()
-            val params = req.parameterMap
+            } else {
+                req.checkAllowedParameters()
+                val params = req.parameterMap
 
-            val filteredRoutes = routeService.filterRoutes(params)
-            resp.writeJsonToBody(filteredRoutes)
+                val filteredRoutes = routeService.filterRoutes(params)
+                resp.writeJsonToBody(filteredRoutes)
+            }
+        } catch (e: NumberFormatException) {
+            throw IllegalArgumentException("Parameter 'id' is not a valid number")
         }
     }
 
@@ -53,7 +57,8 @@ class BaseServlet : HttpServlet() {
     //{id} - delete by id
     override fun doDelete(req: HttpServletRequest, resp: HttpServletResponse) {
         try {
-            val id = req.pathInfo?.toLong() ?: throw IllegalArgumentException("Parameter 'id' is required")
+            val id = req.pathInfo?.removePrefix("/")?.toInt()
+                ?: throw IllegalArgumentException("Parameter 'id' is required")
             val result = routeService.deleteRoute(id)
             resp.writeJsonToBody(result)
             resp.status = 204

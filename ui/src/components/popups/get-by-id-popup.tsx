@@ -1,4 +1,5 @@
 import { Alert, Dialog, DialogContent, Stack } from '@mui/material';
+import { PrettyRoute } from './pretty-route';
 import { Route } from '../../store/routes.store';
 import { RoutesApi } from '../../api/routes.api';
 import Button from '@mui/material/Button';
@@ -30,9 +31,9 @@ export const GetByIdPopup: React.FC<GetByIdPopupProps> = ({
     <Dialog open={isOpen} onClose={onClose}>
       <DialogTitle>Get Route by Id</DialogTitle>
       <DialogContent>
-        <Stack>
+        <Stack spacing={1}>
           <TextField
-            value={id}
+            value={id || ''}
             onChange={e => setId(parseInt(e.target.value, 10))}
             fullWidth
             type="number"
@@ -42,7 +43,7 @@ export const GetByIdPopup: React.FC<GetByIdPopupProps> = ({
           />
           {route && (
             <Alert severity="info">
-              <code>{JSON.stringify(route)}</code>
+              <PrettyRoute route={route} />
             </Alert>
           )}
           {error && <Alert severity="error">{error}</Alert>}

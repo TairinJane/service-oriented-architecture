@@ -28,12 +28,18 @@ export const GetMinButton: React.FC = () => {
       >
         Get Route with Min Distance
       </Button>
-      <GetMinPopup
-        isOpen={isOpen}
-        onClose={() => setOpen(false)}
-        route={route}
-        error={error}
-      />
+      {isOpen && (
+        <GetMinPopup
+          isOpen={isOpen}
+          onClose={() => {
+            setOpen(false);
+            setError(undefined);
+            setRoute(undefined);
+          }}
+          route={route}
+          error={error}
+        />
+      )}
     </>
   );
 };

@@ -15,7 +15,12 @@ export const DeleteWithDistanceButton: React.FC = () => {
       >
         Delete Route with Distance = ...
       </Button>
-      <DeleteWithDistancePopup isOpen={isOpen} onClose={() => setOpen(false)} />
+      {isOpen && (
+        <DeleteWithDistancePopup
+          isOpen={isOpen}
+          onClose={() => setOpen(false)}
+        />
+      )}
     </>
   );
 };

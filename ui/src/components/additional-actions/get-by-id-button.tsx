@@ -15,7 +15,9 @@ export const GetByIdButton: React.FC = () => {
       >
         Get Route by ID
       </Button>
-      <GetByIdPopup isOpen={isOpen} onClose={() => setOpen(false)} />
+      {isOpen && (
+        <GetByIdPopup isOpen={isOpen} onClose={() => setOpen(false)} />
+      )}
     </>
   );
 };

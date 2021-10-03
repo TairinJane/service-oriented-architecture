@@ -33,10 +33,31 @@ export const separateFilterSorter = (
   return { sort, filter };
 };
 
+const hasContentType = (response: Response, type: 'json' | 'text'): boolean => {
+  const contentType = response.headers.get('content-type');
+  if (!contentType) return false;
+  switch (type) {
+    case 'json':
+      return contentType?.includes('application/json');
+    case 'text':
+      return (
+        contentType?.includes('text/html') ||
+        contentType?.includes('text/plain')
+      );
+    default:
+      return false;
+  }
+};
+
 export const callApi = async (url: string, init?: RequestInit) => {
   const response = await fetch(url, init);
   if (response.ok) {
-    return await response.json();
+    const isJson = hasContentType(response, 'json');
+    if (isJson) {
+      return await response.json();
+    } else {
+      return await response.text();
+    }
   } else {
     throw await response.text();
   }

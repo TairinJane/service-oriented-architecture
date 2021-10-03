@@ -15,7 +15,9 @@ export const CountShorterButton: React.FC = () => {
       >
         Count Routes shorter than ...
       </Button>
-      <CountShorterPopup isOpen={isOpen} onClose={() => setOpen(false)} />
+      {isOpen && (
+        <CountShorterPopup isOpen={isOpen} onClose={() => setOpen(false)} />
+      )}
     </>
   );
 };

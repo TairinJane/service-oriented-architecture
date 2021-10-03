@@ -15,7 +15,7 @@ class RouteService {
 
     private val routeRepository = RouteRepository.instance
 
-    fun getRouteById(routeId: Long): Route {
+    fun getRouteById(routeId: Int): Route {
         return routeRepository.getRouteById(routeId)
     }
 
@@ -29,7 +29,7 @@ class RouteService {
         return routeRepository.updateRoute(route)
     }
 
-    fun deleteRoute(routeId: Long): Route {
+    fun deleteRoute(routeId: Int): Route {
         return routeRepository.deleteRoute(routeId)
     }
 
