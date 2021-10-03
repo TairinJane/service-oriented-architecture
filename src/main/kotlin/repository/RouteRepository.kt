@@ -116,7 +116,7 @@ class RouteRepository {
         return results
     }
 
-    fun deleteWithDistanceEquals(distance: Float): Boolean {
+    fun deleteWithDistanceEquals(distance: Float): Int {
         val session =
             HibernateSessionFactory.sessionFactory?.openSession() ?: throw Exception("Couldn't create session")
         val criteriaBuilder = session.criteriaBuilder
@@ -133,14 +133,13 @@ class RouteRepository {
 
         val transaction = session.beginTransaction()
         try {
-            session.createQuery(criteriaDelete).executeUpdate()
+            val deletedCount = session.createQuery(criteriaDelete).executeUpdate()
             transaction.commit()
+            return deletedCount
         } catch (e: Exception) {
             transaction.rollback()
             throw e
         }
-
-        return true
     }
 
     fun findMinDistance(): Route {

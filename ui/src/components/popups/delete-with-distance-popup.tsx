@@ -32,7 +32,7 @@ export const DeleteWithDistancePopup: React.FC<DeleteWithDistancePopupProps> =
           <Stack spacing={1}>
             <TextField
               value={distance || ''}
-              onChange={e => setDistance(parseInt(e.target.value, 10))}
+              onChange={e => setDistance(+e.target.value)}
               fullWidth
               type="number"
               size="small"

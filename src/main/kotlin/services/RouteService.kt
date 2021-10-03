@@ -49,7 +49,7 @@ class RouteService {
         return routeRepository.filterRoutes(sorting, filter, limit, offset)
     }
 
-    fun deleteWithDistanceEquals(distance: Float): Boolean {
+    fun deleteWithDistanceEquals(distance: Float): Int {
         return routeRepository.deleteWithDistanceEquals(distance)
     }
 
