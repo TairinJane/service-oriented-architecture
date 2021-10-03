@@ -5,6 +5,7 @@ import { createSlice } from '@reduxjs/toolkit';
 type RoutesSlice = {
   entities: Route[];
   status: Status;
+  hasMore: boolean;
 };
 
 export enum Status {
@@ -17,6 +18,7 @@ export enum Status {
 const initialState: RoutesSlice = {
   entities: [],
   status: Status.IDLE,
+  hasMore: true,
 };
 
 export const routesSlice = createSlice({
@@ -33,9 +35,12 @@ export const routesSlice = createSlice({
         const { arg: query } = action.meta;
         if (query.offset == 0) {
           state.entities = action.payload;
+          state.hasMore = true;
         } else if (state.entities.length == query.offset) {
           state.entities = state.entities.concat(action.payload);
         }
+        if (action.payload.length < (query.limit || 5)) state.hasMore = false;
+        console.log({ query, hasMore: state.hasMore });
       })
       .addCase(RoutesThunks.getRoutes.rejected, state => {
         state.status = Status.ERROR;

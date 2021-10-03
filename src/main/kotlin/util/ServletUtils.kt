@@ -40,7 +40,14 @@ fun HttpServletRequest.readBody(): String {
 fun <T> HttpServletRequest.getObjectFromBody(cl: Class<T>): T {
     val body = readBody()
     println("body: $body")
-    return gson.fromJson(body, cl)
+    try {
+        return gson.fromJson(body, cl)
+    } catch (e: NumberFormatException) {
+        if (e.message?.contains("to.x") == true) {
+            throw IllegalArgumentException("Field 'to.x' must be an Integer")
+        }
+        throw e
+    }
 }
 
 fun <T> Array<T>.paramArrayToString(): String {

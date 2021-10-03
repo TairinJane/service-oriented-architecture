@@ -12,7 +12,7 @@ export const FilterSorterContext: React.FC = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const dispatch = useDispatch();
-  const routes = useSelector(state => state.routes.entities);
+  const { entities: routes, hasMore } = useSelector(state => state.routes);
 
   const setFieldSorting = (field: RouteFields, sorting: SortType) => {
     setFilterSorter({
@@ -28,7 +28,7 @@ export const FilterSorterContext: React.FC = () => {
     });
   };
 
-  const fetchFiltered = (offset: number, limit: number) => {
+  const fetchRoutesWithFilter = (offset: number, limit: number) => {
     const { sort, filter } = separateFilterSorter(filterSorter);
     dispatch(
       RoutesThunks.getRoutes({
@@ -42,7 +42,7 @@ export const FilterSorterContext: React.FC = () => {
 
   const getFilteredRoutes = () => {
     setPage(0);
-    fetchFiltered(0, rowsPerPage);
+    fetchRoutesWithFilter(0, rowsPerPage);
   };
 
   const onPageChange = (
@@ -50,8 +50,20 @@ export const FilterSorterContext: React.FC = () => {
     newPage: number,
   ) => {
     setPage(newPage);
-    if (routes.length < newPage * rowsPerPage) {
-      fetchFiltered(newPage * rowsPerPage, rowsPerPage);
+    const pageStart = newPage * rowsPerPage;
+    const pageEnd = pageStart + rowsPerPage;
+    if (routes.length < pageEnd && hasMore) {
+      const offset = Math.max(routes.length, pageStart);
+      const limit = Math.min(rowsPerPage, pageEnd - routes.length);
+      console.log({
+        length: routes.length,
+        pageStart,
+        pageEnd,
+        rowsPerPage,
+        limit,
+        offset,
+      });
+      fetchRoutesWithFilter(offset, limit);
     }
   };
 

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { EditRoutePopup } from '../popups/edit-route-popup';
-import { Route, RoutePartial, emptyRoute } from '../../store/routes.store';
+import { EmptyRow } from './empty-row';
+import { RoutePartial, emptyRoute } from '../../store/routes.store';
 import { RoutesApi } from '../../api/routes.api';
 import { RoutesTableFooter } from './table.footer';
 import { RoutesTableHeader } from './table.header';
@@ -16,27 +17,6 @@ import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
-
-const routes: Route[] = [
-  {
-    id: 1,
-    name: 'R1',
-    from: { x: 1, y: 2, name: 'From1', id: 1 },
-    coordinates: { x: 6, y: 8, id: 4 },
-    to: { x: 6, y: 8, z: 7, id: 15 },
-    creationDate: 16332714106565,
-    distance: 16,
-  },
-  {
-    id: 9,
-    name: 'R9',
-    from: { x: 1, y: 2, name: 'From0', id: 1 },
-    coordinates: { x: 6.888, y: 8, id: 4 },
-    to: { x: 6, y: 8, z: 7.085, id: 15 },
-    creationDate: 1633271412846,
-    distance: 16.94,
-  },
-];
 
 type RoutesTableProps = {
   page: number;
@@ -59,7 +39,11 @@ export const RoutesTable: React.FC<RoutesTableProps> = ({
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
-  const { status, entities: routes } = useSelector(state => state.routes);
+  const {
+    status,
+    entities: routes,
+    hasMore,
+  } = useSelector(state => state.routes);
 
   const [editIndex, setEditIndex] = useState<number | null>();
   const [isPopupOpen, setPopupOpen] = useState(false);
@@ -94,6 +78,10 @@ export const RoutesTable: React.FC<RoutesTableProps> = ({
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage,
   );
+  console.log(shownRows.length, rowsPerPage);
+
+  const nextPageAvailable =
+    page * rowsPerPage + rowsPerPage < routes.length || hasMore;
 
   return (
     <>
@@ -121,14 +109,18 @@ export const RoutesTable: React.FC<RoutesTableProps> = ({
                 </TableCell>
               </TableRow>
             )}
+            {shownRows.length < rowsPerPage && (
+              <EmptyRow rowSpan={rowsPerPage - shownRows.length} colSpan={8} />
+            )}
           </TableBody>
           <RoutesTableFooter
             page={page}
             rowsPerPage={rowsPerPage}
             onPageChange={onPageChange}
             onRowsPerPageChange={onRowsPerPageChange}
-            rowsCount={routes.length}
             onAdd={() => setPopupOpen(true)}
+            hasMore={nextPageAvailable}
+            count={routes.length}
           />
         </Table>
       </TableContainer>

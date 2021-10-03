@@ -38,10 +38,20 @@ export type RoutePartial = {
   distance?: number;
 };
 
+export type SearchResponse = {
+  total: number;
+  entities: Route[];
+};
+
 export const emptyRoute: RoutePartial = {
   name: undefined,
   coordinates: undefined,
   to: undefined,
   creationDate: null,
   distance: undefined,
+};
+
+export const defaultSearchState: SearchResponse = {
+  total: 0,
+  entities: [],
 };
