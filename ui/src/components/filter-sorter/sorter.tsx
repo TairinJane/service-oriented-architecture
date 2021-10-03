@@ -1,5 +1,5 @@
 import './sorter.css';
-import { Alert, Button, Paper, Stack } from '@mui/material';
+import { Button, Paper, Stack } from '@mui/material';
 import { FilterField } from './filter-field';
 import {
   FilterSorter,
@@ -15,6 +15,7 @@ type SorterProps = {
   setFieldSorting: (field: RouteFields, sorting: SortType) => void;
   setFieldValue: (field: RouteFields, value: string) => void;
   getFilteredRoutes: () => void;
+  clearFilter: () => void;
 };
 
 export const Sorter: React.FC<SorterProps> = ({
@@ -22,6 +23,7 @@ export const Sorter: React.FC<SorterProps> = ({
   setFieldSorting,
   setFieldValue,
   getFilteredRoutes,
+  clearFilter,
 }) => {
   return (
     <Paper variant="outlined" className="sorter">
@@ -134,9 +136,9 @@ export const Sorter: React.FC<SorterProps> = ({
         <Button variant="contained" fullWidth onClick={getFilteredRoutes}>
           Apply
         </Button>
-        <Alert severity="info" style={{ marginTop: 8 }}>
-          <code>{JSON.stringify(filterSorter)}</code>
-        </Alert>
+        <Button variant="outlined" fullWidth onClick={clearFilter}>
+          Clear Filter
+        </Button>
       </Stack>
     </Paper>
   );

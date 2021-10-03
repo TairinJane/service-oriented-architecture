@@ -62,6 +62,10 @@ export const FilterSorterContext: React.FC = () => {
     setPage(0);
   };
 
+  const clearFilter = () => {
+    setFilterSorter(initialFilterSorter);
+  };
+
   return (
     <>
       <Sorter
@@ -69,6 +73,7 @@ export const FilterSorterContext: React.FC = () => {
         setFieldSorting={setFieldSorting}
         setFieldValue={setFieldValue}
         getFilteredRoutes={getFilteredRoutes}
+        clearFilter={clearFilter}
       />
       <RoutesTable
         page={page}
