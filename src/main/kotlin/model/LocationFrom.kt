@@ -24,8 +24,9 @@ class LocationFrom(
     @SequenceGenerator(name = "location_from_generator", sequenceName = "location_from_seq")
     val id: Int = 1
 
-    val allFields
-        get() = this::class.memberProperties.map { it.name }.filter { it != "id" }
+    companion object {
+        val allFields = listOf("x", "y", "name")
+    }
 
     override fun toString(): String {
         return "LocationFrom(x=$x, y=$y, name='$name', id=$id)"

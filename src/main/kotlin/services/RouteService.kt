@@ -63,13 +63,14 @@ class RouteService {
 
     private fun parseSortingMap(sortingArray: Array<String>): Map<String, SortType> {
         val sorting = mutableMapOf<String, SortType>()
+        println(Route.allFields.joinToString())
         sortingArray.forEach {
-            val sotType = if (it[0] == '-') SortType.DESC else SortType.ASC
+            val sortType = if (it[0] == '-') SortType.DESC else SortType.ASC
             val field = it.removePrefix("-")
 
             if (field !in Route.allFields) throw IllegalArgumentException("Sorting parameter '$field' is not allowed")
 
-            sorting[field] = sotType
+            sorting[field] = sortType
         }
         return sorting
     }
@@ -79,8 +80,7 @@ class RouteService {
 
         val filter = mutableMapOf<String, Any>()
         params.forEach { (key, value) ->
-            val baseParam = key.split('.')[0]
-            if (baseParam !in Route.allFields) throw IllegalArgumentException("Filter parameter '$key' is not allowed")
+            if (key !in Route.allFields) throw IllegalArgumentException("Filter parameter '$key' is not allowed")
             else {
                 val valueString = value.paramArrayToString()
                 try {

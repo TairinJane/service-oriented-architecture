@@ -24,8 +24,9 @@ class Coordinates(
     @SequenceGenerator(name = "coordinates_generator", sequenceName = "coordinates_seq")
     val id: Int = 1
 
-    val allFields
-        get() = this::class.memberProperties.map { it.name }.filter { it != "id" }
+    companion object {
+        val allFields = listOf("x", "y")
+    }
 
     override fun toString(): String {
         return "Coordinates(x=$x, y=$y, id=$id)"

@@ -5,9 +5,11 @@ import model.LocationFrom
 import model.Route
 import util.HibernateSessionFactory
 import util.SortType
+import java.util.*
 import javax.persistence.criteria.CriteriaBuilder
 import javax.persistence.criteria.CriteriaQuery
 import javax.persistence.criteria.Root
+import kotlin.NoSuchElementException
 
 class RouteRepository {
 
@@ -217,11 +219,30 @@ class RouteRepository {
     ): CriteriaQuery<T> {
         if (sorting.isEmpty()) return this
 
-        val sortList = sorting.entries.map { (field, sortType) ->
+        val coordinatesJoin = root.join<Route, Coordinates>("coordinates")
+        val fromJoin = root.join<Route, LocationFrom>("from")
+        val toJoin = root.join<Route, LocationFrom>("to")
+
+        val sortList = sorting.entries.map { (fieldName, sortType) ->
+            val (table, field) = if ('.' in fieldName) fieldName.split('.') else listOf("", fieldName)
+
+            val tableRoot = when (table) {
+                "coordinates" -> coordinatesJoin
+                "from" -> fromJoin
+                "to" -> toJoin
+                else -> root
+            }
+
+            val expression = when (field) {
+                "name" -> tableRoot.get<String>(field)
+                "creationDate" -> tableRoot.get<Date>(field)
+                else -> tableRoot.get<Float>(field)
+            }
+
             if (sortType == SortType.ASC) {
-                cb.asc(root.get<String>(field))
+                cb.asc(expression)
             } else {
-                cb.desc(root.get<String>(field))
+                cb.desc(expression)
             }
         }
 

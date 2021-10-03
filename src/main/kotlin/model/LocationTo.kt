@@ -19,11 +19,12 @@ class LocationTo(
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "location_to_generator")
-    @SequenceGenerator(name="location_to_generator", sequenceName = "location_to_seq")
+    @SequenceGenerator(name = "location_to_generator", sequenceName = "location_to_seq")
     val id: Int = 1
 
-    val allFields
-        get() = this::class.memberProperties.map { it.name }.filter { it != "id" }
+    companion object {
+        val allFields = listOf("x", "y", "z")
+    }
 
     override fun toString(): String {
         return "LocationTo(x=$x, y=$y, z=$z, id=$id)"

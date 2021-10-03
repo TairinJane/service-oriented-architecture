@@ -42,7 +42,7 @@ class Route(
     //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "route_generator")
-    @SequenceGenerator(name="route_generator", sequenceName = "route_seq")
+    @SequenceGenerator(name = "route_generator", sequenceName = "route_seq")
     val id: Int = 1
 
     //Поле не может быть null, Значение этого поля должно генерироваться автоматически
@@ -66,14 +66,9 @@ class Route(
     }
 
     companion object {
-        private val objectFields
-            get() = listOf("coordinates", "from", "to")
 
-        val allFields
-            get() = Route::class.memberProperties.map { it.name }.filter { it != "id" }
+        val allFields = listOf("name", "distance", "id") + Coordinates.allFields.map { "coordinates.$it" } + LocationFrom.allFields.map { "from.$it" } + LocationTo.allFields.map { "to.$it" }
 
-        val baseFields
-            get() = allFields.filter { it !in objectFields }
     }
 
     override fun toString(): String {
