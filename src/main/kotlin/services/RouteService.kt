@@ -6,6 +6,7 @@ import util.SortType
 import util.paramArrayToString
 import java.time.LocalDateTime
 import java.time.format.DateTimeParseException
+import java.util.*
 
 class RouteService {
 
@@ -21,6 +22,7 @@ class RouteService {
 
     fun newRoute(route: Route): Route {
         route.checkConstraints()
+        route.creationDate = Date()
         return routeRepository.addRoute(route)
     }
 

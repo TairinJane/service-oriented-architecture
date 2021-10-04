@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { RoutePartial } from '../../store/routes.store';
 import { Stack } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -26,7 +26,7 @@ export const EditRoutePopup: React.FC<EditRoutePopupProps> = ({
 
   return (
     <Dialog open={isOpen} onClose={onClose}>
-      <DialogTitle>Edit Route</DialogTitle>
+      <DialogTitle>{routeEdit.id ? 'Edit' : 'Add'} Route</DialogTitle>
       <DialogContent>
         <Stack spacing={1}>
           {routeEdit.id && <div>ID: {routeEdit.id}</div>}
@@ -183,7 +183,9 @@ export const EditRoutePopup: React.FC<EditRoutePopupProps> = ({
           />
           <div>Creation Date</div>
           <div>
-            {routeEdit.creationDate || new Date().toLocaleDateString('ru')}
+            {routeEdit.creationDate
+              ? new Date(routeEdit.creationDate).toLocaleDateString('ru')
+              : new Date().toLocaleDateString('ru')}
           </div>
         </Stack>
       </DialogContent>

@@ -21,7 +21,10 @@ export const DeleteWithDistancePopup: React.FC<DeleteWithDistancePopupProps> =
 
     const onSubmit = (distance: number) => {
       RoutesApi.deleteWithDistance(distance)
-        .then(res => setRoute(res))
+        .then(res => {
+          setRoute(res);
+          setError(undefined);
+        })
         .catch(error => setError(error));
     };
 

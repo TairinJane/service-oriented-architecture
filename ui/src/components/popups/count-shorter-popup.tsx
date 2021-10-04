@@ -21,7 +21,10 @@ export const CountShorterPopup: React.FC<CountShorterPopupProps> = ({
 
   const onSubmit = (distance: number) => {
     RoutesApi.countShorterThan(distance)
-      .then(res => setCount(res))
+      .then(res => {
+        setCount(res);
+        setError(undefined);
+      })
       .catch(error => setError(error));
   };
 

@@ -9,7 +9,8 @@ ui/.pnp
 ui/.pnp.js
 
 # production
-ui/build
+*/build
+/src/main/webapp/
 
 # misc
 .DS_Store

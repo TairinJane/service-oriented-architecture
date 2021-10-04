@@ -49,8 +49,8 @@ class Route(
     @NotNull
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "creation_date")
-    val creationDate: Date? = Date()
+    @Column(name = "creation_date", nullable = false, updatable=false)
+    var creationDate: Date? = Date()
 
     fun checkConstraints() {
         Validator.run {

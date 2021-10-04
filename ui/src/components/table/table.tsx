@@ -83,11 +83,11 @@ export const RoutesTable: React.FC<RoutesTableProps> = ({
         <Table sx={{ minWidth: 500 }} aria-label="routes table" size="small">
           <RoutesTableHeader />
           <TableBody>
-            {shownRows.map(route => (
+            {shownRows.map((route, index) => (
               <RoutesTableRow
                 route={route}
                 key={route.id}
-                index={route.id || 0}
+                index={page + index}
                 onEdit={onEditClick}
               />
             ))}

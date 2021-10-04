@@ -13,7 +13,6 @@ class CORSFilter : Filter {
 
     override fun doFilter(servletRequest: ServletRequest, servletResponse: ServletResponse, chain: FilterChain) {
         val request = servletRequest as HttpServletRequest
-        println("CORSFilter HTTP Request: " + request.method)
 
         (servletResponse as HttpServletResponse).addHeader("Access-Control-Allow-Origin", "*")
         servletResponse.addHeader("Access-Control-Allow-Methods", "GET, OPTIONS, HEAD, PUT, POST")

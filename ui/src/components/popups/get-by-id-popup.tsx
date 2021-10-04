@@ -23,7 +23,10 @@ export const GetByIdPopup: React.FC<GetByIdPopupProps> = ({
 
   const onSubmit = (id: number) => {
     RoutesApi.getRouteById(id)
-      .then(res => setRoute(res))
+      .then(res => {
+        setRoute(res);
+        setError(undefined);
+      })
       .catch(error => setError(error));
   };
 

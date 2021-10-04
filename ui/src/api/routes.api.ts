@@ -22,7 +22,6 @@ const getRoutes = async (query: RoutesQuery): Promise<Route[]> => {
     offset: query.offset || 0,
     ...query.filter,
   });
-  console.log(queryString);
   return await callApi(`${ROUTES_API_BASE}?${queryString}`);
 };
 
@@ -31,7 +30,6 @@ const getRouteById = async (id: number): Promise<Route> => {
 };
 
 const addRoute = async (route: RoutePartial): Promise<Route> => {
-  console.log('add route:', route);
   return await callApi(`${ROUTES_API_BASE}`, {
     method: 'POST',
     body: JSON.stringify(route),
