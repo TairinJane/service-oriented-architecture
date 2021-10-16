@@ -1,13 +1,12 @@
 package model
 
-import jakarta.validation.constraints.NotBlank
 import org.hibernate.annotations.CreationTimestamp
 import util.Validator
 import java.util.*
 import javax.persistence.*
 import javax.validation.constraints.Min
+import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
-import kotlin.reflect.full.memberProperties
 
 @Entity
 @Table(name = "routes")
@@ -49,7 +48,7 @@ class Route(
     @NotNull
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "creation_date", nullable = false, updatable=false)
+    @Column(name = "creation_date", nullable = false, updatable = false)
     var creationDate: Date? = Date()
 
     fun checkConstraints() {
@@ -67,7 +66,11 @@ class Route(
 
     companion object {
 
-        val allFields = listOf("name", "distance", "id") + Coordinates.allFields.map { "coordinates.$it" } + LocationFrom.allFields.map { "from.$it" } + LocationTo.allFields.map { "to.$it" }
+        val allFields = listOf(
+            "name",
+            "distance",
+            "id"
+        ) + Coordinates.allFields.map { "coordinates.$it" } + LocationFrom.allFields.map { "from.$it" } + LocationTo.allFields.map { "to.$it" }
 
     }
 

@@ -22,10 +22,10 @@ class Coordinates(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "coordinates_generator")
     @SequenceGenerator(name = "coordinates_generator", sequenceName = "coordinates_seq")
-    val id: Int = 1
+    var id: Int = 1
 
     companion object {
-        val allFields = listOf("x", "y")
+        val allFields = listOf("x", "y", "id")
     }
 
     override fun toString(): String {
@@ -37,5 +37,9 @@ class Coordinates(
             if (notNull(x, "coordinates.x")) max(x!!, "coordinates.x", 327f)
             if (notNull(y, "coordinates.y")) min(y!!, "coordinates.y", -863f)
         }
+    }
+
+    constructor(x: Float?, y: Float?, id: Int) : this(x, y) {
+        this.id = id
     }
 }

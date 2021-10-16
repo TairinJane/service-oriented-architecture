@@ -20,10 +20,10 @@ class LocationTo(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "location_to_generator")
     @SequenceGenerator(name = "location_to_generator", sequenceName = "location_to_seq")
-    val id: Int = 1
+    var id: Int = 1
 
     companion object {
-        val allFields = listOf("x", "y", "z")
+        val allFields = listOf("x", "y", "z", "id")
     }
 
     override fun toString(): String {
@@ -36,5 +36,9 @@ class LocationTo(
             notNull(y, "to.y")
             notNull(z, "to.z")
         }
+    }
+
+    constructor(x: Int?, y: Double?, z: Double?, id: Int) : this(x, y, z) {
+        this.id = id
     }
 }
