@@ -15,7 +15,7 @@ class ErrorHandleFilter : Filter {
         try {
             chain.doFilter(request, response)
         } catch (e: NoSuchElementException) {
-            handleError(response, 400, e)
+            handleError(response, 404, e)
         } catch (e: IllegalArgumentException) {
             handleError(response, 400, e)
         } catch (e: ValidationException) {
@@ -23,7 +23,7 @@ class ErrorHandleFilter : Filter {
         } catch (e: JsonParseException) {
             handleError(response, 400, e)
         } catch (e: Exception) {
-            handleError(response, 500, e)
+            handleError(response, 500, ServletException("Server error"))
         }
     }
 

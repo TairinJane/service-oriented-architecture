@@ -21,7 +21,7 @@ class DeleteServlet : HttpServlet() {
             val deletedCount = routeService.deleteWithDistanceEquals(distance)
             if (deletedCount > 0) {
                 resp.writer.println(deletedCount)
-                resp.status = 204
+                resp.status = 200
             } else throw IllegalArgumentException("No routes with distance = $distance were deleted")
         } catch (e: NumberFormatException) {
             throw IllegalArgumentException("Parameter 'distance' = $distanceString is not a valid float number")

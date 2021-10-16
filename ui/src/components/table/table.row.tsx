@@ -22,7 +22,7 @@ export const RoutesTableRow: React.FC<RoutesTableRowProps> = ({
   const dispatch = useDispatch();
 
   const deleteRow = () => {
-    dispatch(RoutesThunks.deleteRoute(index));
+    if (route.id) dispatch(RoutesThunks.deleteRoute(route.id));
   };
 
   return (

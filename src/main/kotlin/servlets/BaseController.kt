@@ -48,10 +48,20 @@ class BaseServlet : HttpServlet() {
 
     //update route
     override fun doPut(req: HttpServletRequest, resp: HttpServletResponse) {
-        val routeToUpdate = req.getObjectFromBody(Route::class.java)
-        println("route to update: $routeToUpdate")
-        val route = routeService.updateRoute(routeToUpdate)
-        resp.writeJsonToBody(route)
+        try {
+            val id = req.pathInfo?.removePrefix("/")?.toInt()
+            if (id != null) {
+                val routeToUpdate = req.getObjectFromBody(Route::class.java)
+                println("route to update: $routeToUpdate")
+                if (routeToUpdate.id != id) throw IllegalArgumentException("Path parameter 'id' is different from entity id")
+                val route = routeService.updateRoute(routeToUpdate)
+                resp.writeJsonToBody(route)
+            } else {
+                throw IllegalArgumentException("Path parameter 'id' is not specified")
+            }
+        } catch (e: NumberFormatException) {
+            throw IllegalArgumentException("Id must be an integer")
+        }
     }
 
     //{id} - delete by id

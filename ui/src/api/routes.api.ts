@@ -37,7 +37,7 @@ const addRoute = async (route: RoutePartial): Promise<Route> => {
 };
 
 const updateRoute = async (route: Route): Promise<Route> => {
-  return await callApi(`${ROUTES_API_BASE}`, {
+  return await callApi(`${ROUTES_API_BASE}/${route.id}`, {
     method: 'PUT',
     body: JSON.stringify(route),
   });
