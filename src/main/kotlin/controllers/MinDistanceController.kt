@@ -1,12 +1,14 @@
-package controllers
+package com.example.controllers
 
-import model.Route
+import com.example.model.Route
+import com.example.services.RouteService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import services.RouteService
 
-@RestController("/api/routes/min-distance")
+@RestController
+@RequestMapping("/api/routes/min-distance")
 class MinDistanceController {
 
     @Autowired

@@ -1,12 +1,14 @@
-package controllers
+package com.example.controllers
 
+import com.example.services.RouteService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import services.RouteService
 
-@RestController("/api/routes/count-shorter-than")
+@RestController
+@RequestMapping("/api/routes/count-shorter-than")
 class CountShorterController {
 
     @Autowired

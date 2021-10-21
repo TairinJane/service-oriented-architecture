@@ -1,4 +1,4 @@
-package model
+package com.example.model
 
 import util.Validator
 import javax.persistence.*
@@ -20,9 +20,10 @@ class Coordinates(
     var y: Float?
 ) {
     @Id
+    @NotNull
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "coordinates_generator")
     @SequenceGenerator(name = "coordinates_generator", sequenceName = "coordinates_seq")
-    var id: Int = 1
+    var id: Int? = 1
 
     companion object {
         val allFields = listOf("x", "y", "id")
@@ -39,7 +40,7 @@ class Coordinates(
         }
     }
 
-    constructor(x: Float?, y: Float?, id: Int) : this(x, y) {
+    constructor(x: Float?, y: Float?, id: Int?) : this(x, y) {
         this.id = id
     }
 }

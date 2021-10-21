@@ -1,4 +1,4 @@
-package model
+package com.example.model
 
 import org.hibernate.annotations.CreationTimestamp
 import util.Validator
@@ -14,13 +14,13 @@ class Route(
     //Поле не может быть null, Строка не может быть пустой
     @NotNull
     @NotBlank(message = "Route name should not be blank")
-    var name: String,
+    var name: String?,
 
     //Поле не может быть null
     @NotNull
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "coordinates_id", nullable = false)
-    var coordinates: Coordinates,
+    var coordinates: Coordinates?,
 
     //Поле может быть null
     @OneToOne(cascade = [CascadeType.ALL])
@@ -31,18 +31,18 @@ class Route(
     @NotNull
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "to_id", nullable = false)
-    var to: LocationTo,
+    var to: LocationTo?,
 
     //Значение поля должно быть больше 1
     @NotNull
     @Min(value = 1, message = "Route distance should be greater than 1")
-    var distance: Float
+    var distance: Float?
 ) {
     //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "route_generator")
     @SequenceGenerator(name = "route_generator", sequenceName = "route_seq")
-    val id: Int = 1
+    var id: Int? = 1
 
     //Поле не может быть null, Значение этого поля должно генерироваться автоматически
     @NotNull
@@ -54,12 +54,12 @@ class Route(
     fun checkConstraints() {
         Validator.run {
             notNull(name, "Name")
-            notBlank(name, "Name")
+            notBlank(name!!, "Name")
             notNull(coordinates, "Coordinates")
-            coordinates.checkConstraints()
+            coordinates!!.checkConstraints()
             notNull(to, "To")
-            to.checkConstraints()
-            if (notNull(distance, "distance")) min(distance, "distance", 1f)
+            to!!.checkConstraints()
+            if (notNull(distance, "distance")) min(distance!!, "distance", 1f)
             from?.checkConstraints()
         }
     }

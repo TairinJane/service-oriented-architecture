@@ -1,61 +1,73 @@
-package services
+package com.example.services
 
-import model.Route
+import com.example.exceptions.RouteNotFoundException
+import com.example.model.Route
+import com.example.repository.RouteRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Example
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
-import repository.RouteRepository
+import org.springframework.validation.annotation.Validated
 import util.LimitOffsetPagination
 import util.SortType
 
+interface RouteService {
+    fun getRouteById(routeId: Int): Route
+    fun newRoute(@Validated route: Route): Route
+    fun updateRoute(@Validated route: Route): Route
+    fun deleteRoute(routeId: Int)
+    fun filterRoutes(sortList: List<String>?, limit: Int, offset: Int, filterRoute: Route): List<Route>
+    fun deleteWithDistanceEquals(distance: Float): Int
+    fun findMinDistanceRoute(): Route
+    fun countWithDistanceLessThan(distance: Float): Int
+}
+
 @Service
-class RouteService {
+class RouteServiceImpl : RouteService {
 
     @Autowired
     private lateinit var routeRepository: RouteRepository
 
-    fun getRouteById(routeId: Int): Route {
-        return routeRepository.findById(routeId).orElseThrow { NoSuchElementException("No route with id = $routeId") }
+    override fun getRouteById(routeId: Int): Route {
+        return routeRepository.findById(routeId).orElseThrow { RouteNotFoundException(routeId) }
     }
 
-    fun newRoute(route: Route): Route {
-        route.checkConstraints()
+    override fun newRoute(@Validated route: Route): Route {
         return routeRepository.save(route)
     }
 
-    fun updateRoute(route: Route): Route {
-        route.checkConstraints()
+    override fun updateRoute(@Validated route: Route): Route {
         return routeRepository.save(route)
     }
 
-    fun deleteRoute(routeId: Int) {
+    override fun deleteRoute(routeId: Int) {
+        if (!routeRepository.existsById(routeId)) throw RouteNotFoundException(routeId)
         return routeRepository.deleteById(routeId)
     }
 
-    fun filterRoutes(sortList: List<String>, limit: Int, offset: Int, filterRoute: Route): List<Route> {
+    override fun filterRoutes(sortList: List<String>?, limit: Int, offset: Int, filterRoute: Route): List<Route> {
         val routeExample = Example.of(filterRoute)
         val sorting = parseSorting(sortList)
         val pagination = LimitOffsetPagination(offset, limit, sorting)
 
-        return routeRepository.findAll(routeExample, pagination)
+        return routeRepository.findAllBy(routeExample, pagination)
     }
 
-    fun deleteWithDistanceEquals(distance: Float): Int {
+    override fun deleteWithDistanceEquals(distance: Float): Int {
         return routeRepository.deleteByDistanceEquals(distance)
     }
 
-    fun findMinDistanceRoute(): Route {
+    override fun findMinDistanceRoute(): Route {
         return routeRepository.findWithMinDistance()
     }
 
-    fun countWithDistanceLessThan(distance: Float): Int {
+    override fun countWithDistanceLessThan(distance: Float): Int {
         return routeRepository.countByDistanceLessThan(distance)
     }
 
-    private fun parseSorting(sortingList: List<String>): Sort {
+    private fun parseSorting(sortingList: List<String>?): Sort {
         val sorting = Sort.unsorted()
-        sortingList.forEach {
+        sortingList?.forEach {
             val sortType = if (it[0] == '-') SortType.DESC else SortType.ASC
             val field = it.removePrefix("-")
 

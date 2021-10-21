@@ -1,4 +1,4 @@
-package model
+package com.example.model
 
 import util.Validator
 import javax.persistence.*
@@ -20,9 +20,10 @@ class LocationFrom(
     var name: String?
 ) {
     @Id
+    @NotNull
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "location_from_generator")
     @SequenceGenerator(name = "location_from_generator", sequenceName = "location_from_seq")
-    var id: Int = 1
+    var id: Int? = 1
 
     companion object {
         val allFields = listOf("x", "y", "name", "id")
@@ -40,7 +41,7 @@ class LocationFrom(
         }
     }
 
-    constructor(x: Float?, y: Float?, name: String?, id: Int) : this(x, y, name) {
+    constructor(x: Float?, y: Float?, name: String?, id: Int?) : this(x, y, name) {
         this.id = id
     }
 }

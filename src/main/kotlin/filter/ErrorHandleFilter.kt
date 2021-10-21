@@ -6,7 +6,7 @@ import javax.servlet.annotation.WebFilter
 import javax.servlet.http.HttpServletResponse
 import javax.validation.ValidationException
 
-@WebFilter(asyncSupported = true, urlPatterns = ["/*"])
+//@WebFilter(asyncSupported = true, urlPatterns = ["/*"])
 class ErrorHandleFilter : Filter {
     override fun init(filterConfig: FilterConfig?) {
     }

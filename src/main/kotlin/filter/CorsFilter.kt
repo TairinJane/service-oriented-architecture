@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 
-@WebFilter(asyncSupported = true, urlPatterns = ["/*"])
+//@WebFilter(asyncSupported = true, urlPatterns = ["/*"])
 class CORSFilter : Filter {
     override fun init(filterConfig: FilterConfig?) {
     }
