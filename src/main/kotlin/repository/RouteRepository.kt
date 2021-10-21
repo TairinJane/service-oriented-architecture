@@ -1,16 +1,16 @@
 package com.example.repository
 
 import com.example.model.Route
-import org.springframework.data.domain.Example
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 
 @Repository
-interface RouteRepository : JpaRepository<Route, Int> {
+interface RouteRepository : JpaRepository<Route, Int>, JpaSpecificationExecutor<Route> {
 
-    fun findAllBy(filter: Example<Route>, pagination: Pageable): List<Route>
+    fun getAllBy(pagination: Pageable): List<Route>
 
     fun deleteByDistanceEquals(distance: Float): Int
 

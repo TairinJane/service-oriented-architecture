@@ -5,11 +5,16 @@ import javax.persistence.*
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotNull
-import kotlin.reflect.full.memberProperties
 
 @Entity
 @Table(name = "coordinates")
 class Coordinates(
+    @Id
+    @NotNull
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "coordinates_generator")
+    @SequenceGenerator(name = "coordinates_generator", sequenceName = "coordinates_seq")
+    val id: Int?,
+
     //Максимальное значение поля: 327, Поле не может быть null
     @NotNull
     @Max(value = 327, message = "Coordinates x should be less than 327")
@@ -19,11 +24,6 @@ class Coordinates(
     @Min(value = -863, message = "Coordinates y should be greater than -863")
     var y: Float?
 ) {
-    @Id
-    @NotNull
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "coordinates_generator")
-    @SequenceGenerator(name = "coordinates_generator", sequenceName = "coordinates_seq")
-    var id: Int? = 1
 
     companion object {
         val allFields = listOf("x", "y", "id")
@@ -40,7 +40,7 @@ class Coordinates(
         }
     }
 
-    constructor(x: Float?, y: Float?, id: Int?) : this(x, y) {
-        this.id = id
+    fun ifAllNull(): Boolean {
+        return x == null && y == null && id == null
     }
 }

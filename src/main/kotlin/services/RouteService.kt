@@ -2,9 +2,9 @@ package com.example.services
 
 import com.example.exceptions.RouteNotFoundException
 import com.example.model.Route
+import com.example.repository.RouteFilterSpecification
 import com.example.repository.RouteRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Example
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.validation.annotation.Validated
@@ -16,7 +16,7 @@ interface RouteService {
     fun newRoute(@Validated route: Route): Route
     fun updateRoute(@Validated route: Route): Route
     fun deleteRoute(routeId: Int)
-    fun filterRoutes(sortList: List<String>?, limit: Int, offset: Int, filterRoute: Route): List<Route>
+    fun filterRoutes(sortList: List<String>?, limit: Int, offset: Int, routeFilters: Map<String, String>): List<Route>
     fun deleteWithDistanceEquals(distance: Float): Int
     fun findMinDistanceRoute(): Route
     fun countWithDistanceLessThan(distance: Float): Int
@@ -45,12 +45,20 @@ class RouteServiceImpl : RouteService {
         return routeRepository.deleteById(routeId)
     }
 
-    override fun filterRoutes(sortList: List<String>?, limit: Int, offset: Int, filterRoute: Route): List<Route> {
-        val routeExample = Example.of(filterRoute)
+    override fun filterRoutes(
+        sortList: List<String>?,
+        limit: Int,
+        offset: Int,
+        routeFilters: Map<String, String>
+    ): List<Route> {
         val sorting = parseSorting(sortList)
         val pagination = LimitOffsetPagination(offset, limit, sorting)
 
-        return routeRepository.findAllBy(routeExample, pagination)
+        if (routeFilters.isEmpty()) return routeRepository.getAllBy(pagination)
+
+        val routeSpec = RouteFilterSpecification(routeFilters)
+
+        return routeRepository.findAll(routeSpec, pagination).toList()
     }
 
     override fun deleteWithDistanceEquals(distance: Float): Int {
@@ -66,8 +74,12 @@ class RouteServiceImpl : RouteService {
     }
 
     private fun parseSorting(sortingList: List<String>?): Sort {
-        val sorting = Sort.unsorted()
-        sortingList?.forEach {
+        println(sortingList)
+
+        if (sortingList.isNullOrEmpty()) return Sort.unsorted()
+
+        var sorting = Sort.unsorted()
+        sortingList.forEach {
             val sortType = if (it[0] == '-') SortType.DESC else SortType.ASC
             val field = it.removePrefix("-")
 
@@ -76,7 +88,7 @@ class RouteServiceImpl : RouteService {
             val sort = Sort.by(field)
             if (sortType == SortType.DESC) sort.descending()
 
-            sorting.and(sort)
+            sorting = sorting.and(sort)
         }
         return sorting
     }

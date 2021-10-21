@@ -11,6 +11,12 @@ import javax.validation.constraints.NotNull
 @Entity
 @Table(name = "routes")
 class Route(
+    //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "route_generator")
+    @SequenceGenerator(name = "route_generator", sequenceName = "route_seq")
+    val id: Int?,
+
     //Поле не может быть null, Строка не может быть пустой
     @NotNull
     @NotBlank(message = "Route name should not be blank")
@@ -36,20 +42,15 @@ class Route(
     //Значение поля должно быть больше 1
     @NotNull
     @Min(value = 1, message = "Route distance should be greater than 1")
-    var distance: Float?
-) {
-    //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "route_generator")
-    @SequenceGenerator(name = "route_generator", sequenceName = "route_seq")
-    var id: Int? = 1
+    var distance: Float?,
 
     //Поле не может быть null, Значение этого поля должно генерироваться автоматически
     @NotNull
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "creation_date", nullable = false, updatable = false)
-    var creationDate: Date? = Date()
+    val creationDate: Date?
+) {
 
     fun checkConstraints() {
         Validator.run {
@@ -64,6 +65,12 @@ class Route(
         }
     }
 
+    fun ifAllNull(): Boolean {
+        return name == null && (coordinates == null || coordinates?.ifAllNull() == true) &&
+                (from == null || from?.ifAllNull() == true) && (to == null || to?.ifAllNull() == true) &&
+                distance == null && id == null
+    }
+
     companion object {
 
         val allFields = listOf(
@@ -75,7 +82,6 @@ class Route(
     }
 
     override fun toString(): String {
-        return "Route(name='$name', coordinates=$coordinates, from=$from, to=$to, distance=$distance, id=$id, creationDate=$creationDate)"
+        return "Route(name=$name, coordinates=$coordinates, from=$from, to=$to, distance=$distance, id=$id, creationDate=$creationDate)"
     }
-
 }

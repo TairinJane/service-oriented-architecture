@@ -4,11 +4,16 @@ import util.Validator
 import javax.persistence.*
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
-import kotlin.reflect.full.memberProperties
 
 @Entity
 @Table(name = "location_from")
 class LocationFrom(
+    @Id
+    @NotNull
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "location_from_generator")
+    @SequenceGenerator(name = "location_from_generator", sequenceName = "location_from_seq")
+    val id: Int?,
+
     @NotNull
     var x: Float?,
 
@@ -19,11 +24,6 @@ class LocationFrom(
     @Size(max = 367, message = "Location name should be shorter than 367 characters")
     var name: String?
 ) {
-    @Id
-    @NotNull
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "location_from_generator")
-    @SequenceGenerator(name = "location_from_generator", sequenceName = "location_from_seq")
-    var id: Int? = 1
 
     companion object {
         val allFields = listOf("x", "y", "name", "id")
@@ -41,7 +41,7 @@ class LocationFrom(
         }
     }
 
-    constructor(x: Float?, y: Float?, name: String?, id: Int?) : this(x, y, name) {
-        this.id = id
+    fun ifAllNull(): Boolean {
+        return x == null && y == null && name == null && id == null
     }
 }
