@@ -2,9 +2,62 @@
 <html lang='en'>
 <head>
   <meta charset='UTF-8'>
-  <title>Payara</title>
+  <title>Navigator</title>
+  <script src='script.js'></script>
+  <link rel='stylesheet' href='style.css'>
 </head>
 <body>
-Hi lol
+
+<div class='flex-container'>
+
+  <div class='action'>
+    <div class='form'>
+      <div class='form-title'>Shortest Route Between</div>
+      <form onsubmit='return getShortest()' name='shortest' action='#'>
+        <label>From ID
+          <input type='number' min='1' name='from' required>
+        </label>
+        <label>To ID
+          <input type='number' min='1' name='to' required>
+        </label>
+        <button type='submit'>Get shortest between From and To</button>
+      </form>
+    </div>
+
+    <div class='result'>
+      <div class='result-title'>
+        Shortest Route from <span id='from-id-span'>?</span> to <span id='to-id-span'>?</span>:
+      </div>
+      <pre id='shortest-container'></pre>
+    </div>
+  </div>
+
+  <div class='action'>
+    <div class='form'>
+      <div class='form-title'>New Route Between</div>
+      <form onsubmit='return newBetween()' name='between' action='#'>
+        <label>From ID
+          <input type='number' min='1' name='from' required>
+        </label>
+        <label>To ID
+          <input type='number' min='1' name='to' required>
+        </label>
+        <label>Distance
+          <input type='number' min='1' name='distance' required>
+        </label>
+        <button type='submit'>New Route between From and To</button>
+      </form>
+    </div>
+
+    <div class='result'>
+      <div class='result-title'>
+        New Route from <span id='new-from-id'>?</span> to <span id='new-to-id'>?</span>:
+      </div>
+      <pre id='new-container'></pre>
+    </div>
+  </div>
+
+</div>
+
 </body>
 </html>

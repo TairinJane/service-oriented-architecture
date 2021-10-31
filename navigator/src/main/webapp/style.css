@@ -1,0 +1,61 @@
+body {
+    font-family: sans-serif;
+}
+
+.flex-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.action {
+    width: 80%;
+    margin: 20px auto;
+    display: flex;
+    justify-content: space-between;
+    background-color: #f8f8ff;
+    padding: 5px;
+    border-radius: 8px;
+}
+
+.form {
+    width: 40%;
+}
+
+.form-title {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.form label {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px auto;
+}
+
+.form input {
+    width: 70%;
+}
+
+.form button {
+    background-color: #5f38cb;
+    color: white;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+.form button:hover {
+    background-color: #a9ff00;
+    color: white;
+    border: 2px solid blue;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+.result {
+    width: 50%;
+}
+
+.result-title {
+    font-weight: bold;
+}

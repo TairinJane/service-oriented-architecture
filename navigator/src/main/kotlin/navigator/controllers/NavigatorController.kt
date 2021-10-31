@@ -21,7 +21,8 @@ class NavigatorController {
     @Produces(MediaType.APPLICATION_JSON)
     fun getShortestBetween(@PathParam("from") fromId: Int, @PathParam("to") toId: Int): Response {
         val route = service.findShortestRouteBetween(fromId, toId)
-        if (route != null) return Response.ok().entity(route).build()
+        println("Shortest route: $route")
+        if (route != null) return Response.ok().entity(route).type(MediaType.APPLICATION_JSON_TYPE).build()
         return Response.status(404).entity("No routes between locations $fromId and $toId").build()
     }
 
@@ -35,7 +36,8 @@ class NavigatorController {
     ): Response {
         return try {
             val createdRoute = service.newRouteBetween(fromId, toId, distance)
-            Response.status(201).entity(createdRoute).build()
+            println("New Route: $createdRoute")
+            Response.status(201).entity(createdRoute).type(MediaType.APPLICATION_JSON_TYPE).build()
         } catch (e: NoSuchElementException) {
             Response.status(404).entity(e.message).build()
         }
