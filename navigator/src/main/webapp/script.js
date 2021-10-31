@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:666/navigator/routes';
+const BASE_URL = 'https://localhost:8077/navigator/routes';
 
 const getShortest = () => {
   const shortestForm = document.forms['shortest'];

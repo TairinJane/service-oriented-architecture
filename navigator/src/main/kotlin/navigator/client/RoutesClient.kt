@@ -1,6 +1,7 @@
 package navigator.client
 
 import common.model.Route
+import org.glassfish.jersey.SslConfigurator
 import javax.ws.rs.client.Client
 import javax.ws.rs.client.ClientBuilder
 import javax.ws.rs.client.Entity
@@ -9,9 +10,18 @@ import javax.ws.rs.core.MediaType
 
 class RoutesClient {
 
-    private val ROUTES_URL = "http://localhost:8080/api/routes"
+    private val ROUTES_URL = "https://localhost:8066/api/routes"
 
-    private val client: Client = ClientBuilder.newClient()
+    private val sslContext = SslConfigurator.newInstance()
+        .trustStorePassword("payara")
+        .keyPassword("payara")
+        .createSSLContext()
+
+    private val client: Client =
+        ClientBuilder.newBuilder()
+            .sslContext(sslContext)
+            .hostnameVerifier { hostname, _ -> hostname == "localhost" }
+            .build()
     private val target = client.target(ROUTES_URL)
 
     companion object {
