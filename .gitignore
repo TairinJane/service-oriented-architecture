@@ -1,17 +1,15 @@
 .idea/
 build/
-/src/main/resources/hibernate.properties
-/src/main/resources/application.yml
+/routes/src/main/resources/application.yml
 .gradle/
 
 # dependencies
-ui/node_modules
-ui/.pnp
-ui/.pnp.js
+**/ui/node_modules
+**/ui/.pnp
+**/ui/.pnp.js
 
 # production
 */build
-/src/main/webapp/
 
 # misc
 .DS_Store
