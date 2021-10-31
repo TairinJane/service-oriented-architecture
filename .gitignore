@@ -1,7 +1,8 @@
 .idea/
 build/
-/routes/src/main/resources/application.yml
 .gradle/
+
+**/resources/application.yml
 
 # dependencies
 **/ui/node_modules
