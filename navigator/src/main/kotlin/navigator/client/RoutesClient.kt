@@ -2,8 +2,6 @@ package navigator.client
 
 import common.model.Route
 import org.glassfish.jersey.SslConfigurator
-import java.io.InputStream
-import java.util.*
 import javax.ws.rs.client.Client
 import javax.ws.rs.client.ClientBuilder
 import javax.ws.rs.client.Entity
@@ -49,13 +47,5 @@ class RoutesClient {
             .readEntity(Route::class.java)
     }
 
-    private fun getRoutesUrl(): String {
-        val props = Properties()
-        val inputStream: InputStream =
-            this.javaClass.classLoader.getResourceAsStream("navigator.properties") ?: return ""
-        inputStream.use {
-            props.load(inputStream)
-        }
-        return props.getProperty("routes-url")
-    }
+    private fun getRoutesUrl(): String = System.getProperty("routes.url")
 }
