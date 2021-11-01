@@ -2,6 +2,8 @@ package navigator.client
 
 import common.model.Route
 import org.glassfish.jersey.SslConfigurator
+import java.io.InputStream
+import java.util.*
 import javax.ws.rs.client.Client
 import javax.ws.rs.client.ClientBuilder
 import javax.ws.rs.client.Entity
@@ -10,7 +12,7 @@ import javax.ws.rs.core.MediaType
 
 class RoutesClient {
 
-    private val ROUTES_URL = "https://localhost:8066/api/routes"
+    private val ROUTES_URL = getRoutesUrl()
 
     private val sslContext = SslConfigurator.newInstance()
         .trustStorePassword("payara")
@@ -45,5 +47,15 @@ class RoutesClient {
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.entity(route, MediaType.APPLICATION_JSON))
             .readEntity(Route::class.java)
+    }
+
+    private fun getRoutesUrl(): String {
+        val props = Properties()
+        val inputStream: InputStream =
+            this.javaClass.classLoader.getResourceAsStream("navigator.properties") ?: return ""
+        inputStream.use {
+            props.load(inputStream)
+        }
+        return props.getProperty("routes-url")
     }
 }

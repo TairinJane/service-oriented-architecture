@@ -14,8 +14,7 @@ interface RouteRepository : JpaRepository<Route, Int>, JpaSpecificationExecutor<
 
     fun deleteByDistanceEquals(distance: Float): Int
 
-    @Query(value = "select r from Route r WHERE r.distance = (select min(r.distance) from Route r)")
-    fun findWithMinDistance(): Route
+    fun findFirstByOrderByDistanceAsc(): Route
 
     fun countByDistanceLessThan(distance: Float): Int
 }

@@ -85,7 +85,7 @@ class RouteServiceImpl : RouteService {
     }
 
     override fun findMinDistanceRoute(): Route {
-        return routeRepository.findWithMinDistance()
+        return routeRepository.findFirstByOrderByDistanceAsc()
     }
 
     override fun countWithDistanceLessThan(distance: Float): Int {
@@ -99,13 +99,12 @@ class RouteServiceImpl : RouteService {
 
         var sorting = Sort.unsorted()
         sortingList.forEach {
-            val sortType = if (it[0] == '-') SortType.DESC else SortType.ASC
+            val sortDirection = if (it[0] == '-') Sort.Direction.DESC else Sort.Direction.ASC
             val field = it.removePrefix("-")
 
             if (field !in Route.allFields) throw IllegalArgumentException("Sorting parameter '$field' is not allowed")
 
-            val sort = Sort.by(field)
-            if (sortType == SortType.DESC) sort.descending()
+            val sort = Sort.by(sortDirection, field)
 
             sorting = sorting.and(sort)
         }

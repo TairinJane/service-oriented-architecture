@@ -8,7 +8,7 @@ import React from 'react';
 
 const Header = () => (
   <div>
-    <h1>Lab #1 (1009)</h1>
+    <h1>Lab #2 (1009.12)</h1>
   </div>
 );
 
