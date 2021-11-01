@@ -17,7 +17,7 @@ class NavigatorController {
     }
 
     @GET
-    @Path("{from}/{to}/shortest")
+    @Path("{from : \\d+}/{to : \\d+}/shortest")
     @Produces(MediaType.APPLICATION_JSON)
     fun getShortestBetween(@PathParam("from") fromId: Int, @PathParam("to") toId: Int): Response {
         val route = service.findShortestRouteBetween(fromId, toId)
@@ -27,7 +27,7 @@ class NavigatorController {
     }
 
     @POST
-    @Path("add/{from}/{to}/{distance}")
+    @Path("add/{from : \\d+}/{to : \\d+}/{distance : ([0-9]*[.])?[0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
     fun newRouteBetween(
         @PathParam("from") fromId: Int,
