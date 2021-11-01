@@ -33,6 +33,10 @@ const addRoute = async (route: RoutePartial): Promise<Route> => {
   return await callApi(`${ROUTES_API_BASE}`, {
     method: 'POST',
     body: JSON.stringify(route),
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
   });
 };
 
@@ -40,6 +44,10 @@ const updateRoute = async (route: Route): Promise<Route> => {
   return await callApi(`${ROUTES_API_BASE}/${route.id}`, {
     method: 'PUT',
     body: JSON.stringify(route),
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
   });
 };
 

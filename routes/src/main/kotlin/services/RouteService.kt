@@ -40,7 +40,7 @@ class RouteServiceImpl : RouteService {
         return routeRepository.findById(routeId).orElseThrow { RouteNotFoundException(routeId) }
     }
 
-    override fun newRoute(@Validated route: Route): Route {
+    override fun newRoute(route: Route): Route {
         route.apply {
             val coordinatesId = coordinates?.id
             if (coordinatesId != null) coordinates = coordinatesRepository.findById(coordinatesId).get()
@@ -51,11 +51,12 @@ class RouteServiceImpl : RouteService {
             val toId = to?.id
             if (toId != null) to = toRepository.findById(toId).get()
         }
-
+        route.checkConstraints()
         return routeRepository.save(route)
     }
 
-    override fun updateRoute(@Validated route: Route): Route {
+    override fun updateRoute(route: Route): Route {
+        route.checkConstraints()
         return routeRepository.save(route)
     }
 
