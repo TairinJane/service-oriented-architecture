@@ -28,7 +28,6 @@ subprojects {
     dependencies {
         testImplementation(kotlin("test"))
         implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.2")
-        implementation("javax:javaee-api:7.0")
         implementation(kotlin("stdlib-jdk8"))
         implementation("org.jetbrains.kotlin:kotlin-reflect")
     }

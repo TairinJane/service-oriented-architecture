@@ -6,6 +6,7 @@ plugins {
 dependencies {
     implementation("com.google.code.gson:gson:2.8.8")
     implementation("org.glassfish.jersey.core:jersey-client:3.0.3")
+    implementation("javax:javaee-api:7.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0")
     compileOnly("org.glassfish.jersey.containers:jersey-container-servlet:2.25.1")
     compileOnly("javax.ws.rs:javax.ws.rs-api:2.1.1")

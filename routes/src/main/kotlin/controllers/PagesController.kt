@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping
 @Controller
 class PagesController {
 
-    @GetMapping("/")
+    @GetMapping("/routes")
     fun index() = "index"
 }
