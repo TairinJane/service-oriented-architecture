@@ -19,6 +19,7 @@ dependencies {
     implementation("org.postgresql:postgresql:42.2.16")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:3.0.4")
     implementation(project(":common"))
