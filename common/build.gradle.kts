@@ -13,4 +13,5 @@ allOpen {
 dependencies {
     implementation("org.hibernate.validator:hibernate-validator:7.0.0.Final")
     implementation("org.hibernate:hibernate-core:5.5.7.Final")
+    implementation("javax:javaee-api:7.0")
 }

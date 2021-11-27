@@ -1,10 +1,9 @@
 plugins {
-    war
-    id("fish.payara.micro-gradle-plugin") version "1.1.0"
+    ear
+    id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
 dependencies {
-    implementation("com.google.code.gson:gson:2.8.8")
     implementation("org.glassfish.jersey.core:jersey-client:3.0.3")
     implementation("javax:javaee-api:7.0")
     implementation("javax.ejb:javax.ejb-api:3.2.2")
@@ -15,10 +14,9 @@ dependencies {
     compileOnly("javax.xml.ws:jaxws-api:2.3.1")
     compileOnly("javax.jws:javax.jws-api:1.1")
     implementation(project(":common"))
-//    compileOnly(project(":ejb"))
 }
 
-payaraMicro {
-    commandLineOptions = mapOf("port" to 666, "contextRoot" to "/")
-//    isUseUberJar = true
+tasks{
+    shadowJar {
+    }
 }
