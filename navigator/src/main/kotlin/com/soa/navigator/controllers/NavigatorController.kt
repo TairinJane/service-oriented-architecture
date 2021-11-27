@@ -1,9 +1,7 @@
 package com.soa.navigator.controllers
 
 import com.soa.common.model.Route
-import com.soa.navigator.service.NavigatorService
-import java.util.*
-import javax.naming.Context
+import com.soa.ejb.service.NavigatorService
 import javax.naming.InitialContext
 import javax.naming.NamingException
 import javax.ws.rs.*
@@ -14,7 +12,6 @@ import javax.ws.rs.core.Response
 @Path("routes")
 class NavigatorController {
 
-    //    @EJB(lookup = "java:global/ejb-all/NavigatorServiceImpl")
     private val navigatorService: NavigatorService = lookupService()
 
     @GET
@@ -51,27 +48,12 @@ class NavigatorController {
     }
 
     private fun lookupService(): NavigatorService {
-        val jndiProperties = Properties()
-        jndiProperties[Context.URL_PKG_PREFIXES] = "org.jboss.ejb.client.naming"
-        val contextProperties = Properties()
-        contextProperties.setProperty(
-            Context.INITIAL_CONTEXT_FACTORY,
-            "com.sun.enterprise.naming.SerialInitContextFactory"
-        )
-/*
-        val props = Properties()
-        props.setProperty("java.naming.factory.initial", "com.sun.enterprise.naming.SerialInitContextFactory")
-        props.setProperty("java.naming.factory.url.pkgs", "com.sun.enterprise.naming")
-        props.setProperty("java.naming.factory.state", "com.sun.corba.ee.impl.presentation.rmi.JNDIStateFactoryImpl")*/
-
-        val context = InitialContext(contextProperties)
-        println(context.environment)
+        val context = InitialContext()
 
         val appName = "global"
         val moduleName = "ejb-all"
-        val beanName = "NavigatorServiceImpl"
-//        val lookupName = "java:$appName/$moduleName/$beanName"
-        val lookupName = "java:global/ejb-all/NavigatorServiceBean!com.soa.ejb.service.NavigatorService"
+        val beanName = "NavigatorServiceBean"
+        val lookupName = "java:$appName/$moduleName/$beanName"
 
         return try {
             context.lookup(lookupName) as NavigatorService

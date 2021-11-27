@@ -1,4 +1,4 @@
-package com.soa.navigator.service
+package com.soa.ejb.service
 
 import com.soa.common.model.Route
 import javax.ejb.Remote
