@@ -50,10 +50,7 @@ class NavigatorController {
     private fun lookupService(): NavigatorService {
         val context = InitialContext()
 
-        val appName = "global"
-        val moduleName = "ejb-all"
-        val beanName = "NavigatorServiceBean"
-        val lookupName = "java:$appName/$moduleName/$beanName"
+        val lookupName = navigatorLookupName()
 
         return try {
             context.lookup(lookupName) as NavigatorService
@@ -62,6 +59,13 @@ class NavigatorController {
             e.printStackTrace()
             return navigatorBeanMock
         }
+    }
+
+    private fun navigatorLookupName(): String {
+        val appName = System.getProperty("ejb.app.name")
+        val moduleName = System.getProperty("ejb.module.name")
+        val beanName = System.getProperty("ejb.bean.name")
+        return "java:$appName/$moduleName/$beanName"
     }
 }
 
