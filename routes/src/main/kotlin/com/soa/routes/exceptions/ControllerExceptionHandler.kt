@@ -1,6 +1,5 @@
-package com.example.exceptions
+package com.soa.routes.exceptions
 
-import com.soa.routes.exceptions.RouteNotFoundException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

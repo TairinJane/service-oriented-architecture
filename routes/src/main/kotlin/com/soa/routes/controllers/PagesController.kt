@@ -23,7 +23,7 @@ class PagesController {
     @GetMapping("/greeting")
     @ResponseBody
     fun greeting(): String {
-        return "hello from ${eurekaClient.getApplication(appName).getName()}"
+        return "hello from ${eurekaClient.getApplication(appName).name}"
     }
 
 }

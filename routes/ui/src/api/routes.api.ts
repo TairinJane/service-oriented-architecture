@@ -3,7 +3,7 @@ import { RouteFields } from '../components/filter-sorter/config';
 import { callApi } from '../util/util';
 import { stringify } from 'query-string';
 
-const ROUTES_API_BASE = '/api/routes';
+const ROUTES_API_BASE = process.env.PUBLIC_URL + '/api/routes';
 
 export type QuerySort = string[];
 export type QueryFilter = Partial<Record<RouteFields, any>>;
