@@ -3,6 +3,7 @@ package com.soa.common.model
 import com.soa.common.util.Validator
 import jakarta.validation.constraints.NotBlank
 import org.hibernate.annotations.CreationTimestamp
+import java.io.Serializable
 import java.util.*
 import javax.persistence.*
 import javax.validation.constraints.Min
@@ -50,7 +51,7 @@ class Route(
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "creation_date", nullable = false, updatable = false)
     var creationDate: Date?
-) {
+): Serializable {
 
     fun checkConstraints() {
         Validator.run {

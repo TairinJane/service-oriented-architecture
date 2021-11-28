@@ -1,6 +1,5 @@
 plugins {
     war
-    id("fish.payara.micro-gradle-plugin") version "1.1.0"
 }
 
 dependencies {
@@ -15,10 +14,4 @@ dependencies {
     compileOnly("javax.xml.ws:jaxws-api:2.3.1")
     compileOnly("javax.jws:javax.jws-api:1.1")
     implementation(project(":common"))
-//    compileOnly(project(":ejb"))
-}
-
-payaraMicro {
-    commandLineOptions = mapOf("port" to 666, "contextRoot" to "/")
-//    isUseUberJar = true
 }

@@ -1,6 +1,7 @@
 package com.soa.common.model
 
 import com.soa.common.util.Validator
+import java.io.Serializable
 import javax.persistence.*
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
@@ -23,7 +24,7 @@ class LocationFrom(
     //Длина строки не должна быть больше 367, Поле может быть null
     @Size(max = 367, message = "Location name should be shorter than 367 characters")
     var name: String?
-) {
+): Serializable {
 
     companion object {
         val allFields = listOf("x", "y", "name", "id")

@@ -2,6 +2,7 @@ package com.soa.navigator.controllers
 
 import com.soa.common.model.Route
 import com.soa.ejb.service.NavigatorService
+import javax.ejb.EJBException
 import javax.naming.InitialContext
 import javax.naming.NamingException
 import javax.ws.rs.*
@@ -16,15 +17,19 @@ class NavigatorController {
 
     @GET
     fun ping(): Response {
-        println(navigatorService.ping())
-        return Response.ok().entity("Service online").build()
+        return Response.ok().entity(navigatorService.ping()).build()
     }
 
     @GET
     @Path("{from : \\d+}/{to : \\d+}/shortest")
     @Produces(MediaType.APPLICATION_JSON)
     fun getShortestBetween(@PathParam("from") fromId: Int, @PathParam("to") toId: Int): Response {
-        val route = navigatorService.findShortestRouteBetween(fromId, toId)
+        val route = try {
+            navigatorService.findShortestRouteBetween(fromId, toId)
+        } catch (e: Exception) {
+            println(e.message)
+            return Response.status(500).entity(e.message).build()
+        }
         println("Shortest route: $route")
         if (route != null) return Response.ok().entity(route).type(MediaType.APPLICATION_JSON_TYPE).build()
         return Response.status(404).entity("No routes between locations $fromId and $toId").build()
@@ -44,12 +49,16 @@ class NavigatorController {
             Response.status(201).entity(createdRoute).type(MediaType.APPLICATION_JSON_TYPE).build()
         } catch (e: NoSuchElementException) {
             Response.status(404).entity(e.message).build()
+        } catch (e: EJBException) {
+            if (e.causedByException is NoSuchElementException)
+                Response.status(404).entity(e.message).build()
+            else
+                Response.status(500).entity(e.message).build()
         }
     }
 
     private fun lookupService(): NavigatorService {
         val context = InitialContext()
-
         val lookupName = navigatorLookupName()
 
         return try {

@@ -1,6 +1,7 @@
 package com.soa.common.model
 
 import com.soa.common.util.Validator
+import java.io.Serializable
 import javax.persistence.*
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
@@ -23,7 +24,7 @@ class Coordinates(
     //Значение поля должно быть больше -863
     @Min(value = -863, message = "Coordinates y should be greater than -863")
     var y: Float?
-) {
+): Serializable {
 
     companion object {
         val allFields = listOf("x", "y", "id")

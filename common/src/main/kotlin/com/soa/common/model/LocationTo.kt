@@ -1,6 +1,7 @@
 package com.soa.common.model
 
 import com.soa.common.util.Validator
+import java.io.Serializable
 import javax.persistence.*
 import javax.validation.constraints.NotNull
 
@@ -21,7 +22,7 @@ class LocationTo(
 
     @NotNull
     var z: Double?,
-) {
+): Serializable {
 
     companion object {
         val allFields = listOf("x", "y", "z", "id")
