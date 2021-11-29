@@ -11,13 +11,5 @@
                 <steady-pool-size>1</steady-pool-size>
             </bean-pool>
         </ejb>
-        <ejb>
-            <ejb-name>NavigatorClient</ejb-name>
-            <bean-pool>
-                <max-pool-size>20</max-pool-size>
-                <max-wait-time-in-millis>0</max-wait-time-in-millis>
-                <steady-pool-size>1</steady-pool-size>
-            </bean-pool>
-        </ejb>
     </enterprise-beans>
 </glassfish-ejb-jar>
