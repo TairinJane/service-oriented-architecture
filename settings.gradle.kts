@@ -5,4 +5,5 @@ include("common")
 include("eureka-server")
 include("zuul-proxy")
 include("ejb")
+include("ejb-interface")
 

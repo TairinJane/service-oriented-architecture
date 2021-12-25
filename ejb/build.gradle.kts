@@ -14,6 +14,7 @@ dependencies {
     compileOnly("javax.xml.ws:jaxws-api:2.3.1")
     compileOnly("javax.jws:javax.jws-api:1.1")
     implementation(project(":common"))
+    implementation(project(":ejb-interface"))
 }
 
 tasks{

@@ -2,6 +2,7 @@ package com.soa.ejb.service
 
 import com.soa.common.model.Coordinates
 import com.soa.common.model.Route
+import com.soa.ejb.remote.NavigatorService
 import org.glassfish.jersey.SslConfigurator
 import javax.ejb.Stateless
 import javax.ws.rs.client.Client
@@ -33,7 +34,7 @@ class NavigatorServiceBean : NavigatorService {
         return routes.minByOrNull { it.distance ?: Float.MAX_VALUE }
     }
 
-    override fun newRouteBetween(fromId: Int, toId: Int, distance: Float): Route? {
+    override fun newRouteBetween(fromId: Int, toId: Int, distance: Float): Route {
         val fromRoute = findRoutesByLocations(fromId = fromId, limit = 1, toId = null)
         if (fromRoute.isEmpty()) throw NoSuchElementException("Location (from) with id = $fromId doesn't exist")
 
@@ -73,7 +74,7 @@ class NavigatorServiceBean : NavigatorService {
             .get(object : GenericType<List<Route>>() {})
     }
 
-    private fun newRoute(route: Route): Route? {
+    private fun newRoute(route: Route): Route {
         return target
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.entity(route, MediaType.APPLICATION_JSON))

@@ -1,59 +1,72 @@
 package com.soa.navigator.controllers
 
 import com.soa.common.model.Route
-import com.soa.ejb.service.NavigatorService
+import com.soa.ejb.remote.NavigatorService
+import com.soa.navigator.dto.RouteDTO
+import com.soa.navigator.dto.toDTO
+import com.soa.navigator.exceptions.NavigatorException
 import javax.ejb.EJBException
+import javax.jws.WebMethod
+import javax.jws.WebParam
+import javax.jws.WebService
 import javax.naming.InitialContext
 import javax.naming.NamingException
-import javax.ws.rs.*
-import javax.ws.rs.core.MediaType
-import javax.ws.rs.core.Response
+import kotlin.jvm.Throws
+
+@WebService
+interface NavigatorController {
+    @WebMethod
+    fun ping(): String
+
+    @WebMethod
+    @Throws(NavigatorException::class)
+    fun getShortestBetween(@WebParam(name = "fromId") fromId: Int, @WebParam(name = "toId") toId: Int): RouteDTO
+
+    @WebMethod
+    @Throws(NavigatorException::class)
+    fun newRouteBetween(
+        @WebParam(name = "fromId") fromId: Int,
+        @WebParam(name = "toId") toId: Int,
+        @WebParam(name = "distance") distance: Float
+    ): RouteDTO
+}
 
 
-@Path("routes")
-class NavigatorController {
+@WebService(endpointInterface = "com.soa.navigator.controllers.NavigatorController", serviceName = "navigatorService")
+class NavigatorControllerImpl : NavigatorController {
 
     private val navigatorService: NavigatorService = lookupService()
 
-    @GET
-    fun ping(): Response {
-        return Response.ok().entity(navigatorService.ping()).build()
+    @WebMethod
+    override fun ping(): String {
+        return navigatorService.ping()
     }
 
-    @GET
-    @Path("{from : \\d+}/{to : \\d+}/shortest")
-    @Produces(MediaType.APPLICATION_JSON)
-    fun getShortestBetween(@PathParam("from") fromId: Int, @PathParam("to") toId: Int): Response {
+    @WebMethod
+    override fun getShortestBetween(fromId: Int, toId: Int): RouteDTO {
         val route = try {
             navigatorService.findShortestRouteBetween(fromId, toId)
         } catch (e: Exception) {
             println(e.message)
-            return Response.status(500).entity(e.message).build()
+            throw NavigatorException(e.message)
         }
         println("Shortest route: $route")
-        if (route != null) return Response.ok().entity(route).type(MediaType.APPLICATION_JSON_TYPE).build()
-        return Response.status(404).entity("No routes between locations $fromId and $toId").build()
+        return route?.toDTO() ?: throw NavigatorException("No routes between locations $fromId and $toId")
     }
 
-    @POST
-    @Path("add/{from : \\d+}/{to : \\d+}/{distance : ([0-9]*[.])?[0-9]+}")
-    @Produces(MediaType.APPLICATION_JSON)
-    fun newRouteBetween(
-        @PathParam("from") fromId: Int,
-        @PathParam("to") toId: Int,
-        @PathParam("distance") distance: Float
-    ): Response {
+    @WebMethod
+    override fun newRouteBetween(fromId: Int, toId: Int, distance: Float): RouteDTO {
         return try {
             val createdRoute = navigatorService.newRouteBetween(fromId, toId, distance)
             println("New Route: $createdRoute")
-            Response.status(201).entity(createdRoute).type(MediaType.APPLICATION_JSON_TYPE).build()
+            createdRoute.toDTO()
         } catch (e: NoSuchElementException) {
-            Response.status(404).entity(e.message).build()
+            throw NavigatorException(e.message, 404)
         } catch (e: EJBException) {
             if (e.causedByException is NoSuchElementException)
-                Response.status(404).entity(e.message).build()
+                throw NavigatorException(e.message, 404)
             else
-                Response.status(500).entity(e.message).build()
+                throw NavigatorException(e.message)
         }
     }
 
@@ -65,7 +78,6 @@ class NavigatorController {
             context.lookup(lookupName) as NavigatorService
         } catch (e: NamingException) {
             println("No bean ($lookupName) found :(")
-            e.printStackTrace()
             return navigatorBeanMock
         }
     }
@@ -83,7 +95,7 @@ val navigatorBeanMock = object : NavigatorService {
         TODO("Not yet implemented")
     }
 
-    override fun newRouteBetween(fromId: Int, toId: Int, distance: Float): Route? {
+    override fun newRouteBetween(fromId: Int, toId: Int, distance: Float): Route {
         TODO("Not yet implemented")
     }
 

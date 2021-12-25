@@ -1,5 +1,6 @@
 plugins {
     war
+    id("org.jetbrains.kotlin.plugin.noarg") version "1.6.10"
 }
 
 dependencies {
@@ -14,4 +15,9 @@ dependencies {
     compileOnly("javax.xml.ws:jaxws-api:2.3.1")
     compileOnly("javax.jws:javax.jws-api:1.1")
     implementation(project(":common"))
+    implementation(project(":ejb-interface"))
+}
+
+noArg {
+    annotation("javax.xml.bind.annotation.XmlRootElement")
 }
