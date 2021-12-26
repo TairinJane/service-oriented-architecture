@@ -11,8 +11,7 @@ import javax.validation.constraints.Size
 class LocationFrom(
     @Id
     @NotNull
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "location_from_generator")
-    @SequenceGenerator(name = "location_from_generator", sequenceName = "location_from_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Int?,
 
     @NotNull

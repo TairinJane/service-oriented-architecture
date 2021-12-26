@@ -14,7 +14,7 @@ import javax.ws.rs.core.MediaType
 @Stateless
 class NavigatorServiceBean : NavigatorService {
 
-    private val ROUTES_URL = getRoutesUrl()
+    private val routesUrl = getRoutesUrl()
 
     private val sslContext = SslConfigurator.newInstance()
         .trustStorePassword("payara")
@@ -27,7 +27,7 @@ class NavigatorServiceBean : NavigatorService {
             .hostnameVerifier { hostname, _ -> hostname == "localhost" }
             .build()
 
-    private val target = client.target(ROUTES_URL)
+    private val target = client.target(routesUrl)
 
     override fun findShortestRouteBetween(fromId: Int, toId: Int): Route? {
         val routes = findRoutesByLocations(fromId = fromId, toId = toId, limit = null)

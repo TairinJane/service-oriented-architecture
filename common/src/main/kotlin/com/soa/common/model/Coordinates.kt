@@ -12,8 +12,7 @@ import javax.validation.constraints.NotNull
 class Coordinates(
     @Id
     @NotNull
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "coordinates_generator")
-    @SequenceGenerator(name = "coordinates_generator", sequenceName = "coordinates_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Int?,
 
     //Максимальное значение поля: 327, Поле не может быть null

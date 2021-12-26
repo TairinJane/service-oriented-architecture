@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: routes-service
+  jpa:
+    show-sql: true
+  datasource:
+    username: postgres
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/routes
+server:
+  port: 0
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}

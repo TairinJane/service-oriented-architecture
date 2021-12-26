@@ -10,8 +10,7 @@ import javax.validation.constraints.NotNull
 class LocationTo(
     @Id
     @NotNull
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "location_to_generator")
-    @SequenceGenerator(name = "location_to_generator", sequenceName = "location_to_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Int?,
 
     @NotNull

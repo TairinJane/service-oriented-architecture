@@ -3,7 +3,7 @@ build/
 .gradle/
 out/
 
-routes/**/resources/application.yml
+pgdata
 
 # dependencies
 **/ui/node_modules

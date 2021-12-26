@@ -14,8 +14,7 @@ import javax.validation.constraints.NotNull
 class Route(
     //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "route_generator")
-    @SequenceGenerator(name = "route_generator", sequenceName = "route_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Int?,
 
     //Поле не может быть null, Строка не может быть пустой
