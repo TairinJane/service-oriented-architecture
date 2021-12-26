@@ -1,0 +1,57 @@
+POST http://localhost:8080/navigator/navigatorService
+Content-Type: text/xml
+
+<?xml version="1.0"?>
+<s11:Envelope xmlns:s11='http://schemas.xmlsoap.org/soap/envelope/'>
+    <s11:Body>
+        <ns1:newRouteBetween xmlns:ns1='http://controllers.navigator.soa.com/'>
+            <fromId>1</fromId>
+            <toId>7</toId>
+            <distance>10</distance>
+        </ns1:newRouteBetween>
+    </s11:Body>
+</s11:Envelope>
+
+###
+
+POST http://localhost:8080/navigator/navigatorService
+Content-Type: text/xml
+
+<?xml version="1.0"?>
+<s11:Envelope xmlns:s11="http://schemas.xmlsoap.org/soap/envelope/">
+    <s11:Body>
+        <ns1:ping xmlns:ns1="http://controllers.navigator.soa.com/"/>
+    </s11:Body>
+</s11:Envelope>
+
+###
+
+POST http://localhost:8080/navigator/navigatorService
+Content-Type: text/xml
+
+<?xml version="1.0"?>
+<s11:Envelope xmlns:s11='http://schemas.xmlsoap.org/soap/envelope/'>
+    <s11:Body>
+        <ns1:getShortestBetween xmlns:ns1='http://controllers.navigator.soa.com/'>
+            <fromId>1</fromId>
+            <toId>7</toId>
+        </ns1:getShortestBetween>
+    </s11:Body>
+</s11:Envelope>
+
+###
+
+POST http://localhost:8080/navigator/navigatorService
+Content-Type: text/xml
+
+<?xml version="1.0"?>
+<s11:Envelope xmlns:s11='http://schemas.xmlsoap.org/soap/envelope/'>
+    <s11:Body>
+        <ns1:getShortestBetween xmlns:ns1='http://controllers.navigator.soa.com/'>
+            <fromId>kgjkj</fromId>
+            <toId>7</toId>
+        </ns1:getShortestBetween>
+    </s11:Body>
+</s11:Envelope>
+
+###

@@ -1,0 +1,15 @@
+GET https://localhost:8762/routes-service/api/routes/min-distance
+
+###
+
+GET https://localhost:8762/routes-service/api/routes/count-shorter-than?distance=100
+
+###
+
+GET https://localhost:8762/routes-service/api/routes?limit=5&offset=0
+
+###
+
+GET https://localhost:8762/routes-service/api/routes?limit=3&offset=5&sort=from.x
+
+##

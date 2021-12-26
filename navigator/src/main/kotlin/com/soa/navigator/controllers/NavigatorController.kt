@@ -57,7 +57,7 @@ class NavigatorControllerImpl : NavigatorController {
             throw NavigatorException(e.message)
         }
         println("Shortest route: $route")
-        return route?.toDTO() ?: throw NavigatorException("No routes between locations $fromId and $toId")
+        return route?.toDTO() ?: throw NavigatorException("No routes between locations $fromId and $toId", 404)
     }
 
     @WebMethod
